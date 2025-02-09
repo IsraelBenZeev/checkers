@@ -15,11 +15,19 @@ class Board {
         this.handlerRightEat = null;
         this.leftEAt = false;
         this.rightEAt = false;
+        this.counterRedPawn = 0;
+        this.counterdarkPawn = 0;
         this.aaa = false;
 
-
-
     };
+    updaterRedCounter() {
+        const pawnsDed = document.querySelector(".pawns-ded");
+        pawnsDed.style.direction = "rtl";
+
+        pawnsDed.innerHTML = "סך הכל חיילים אדומים: <br>" + this.counterRedPawn + "<br>";
+        pawnsDed.innerHTML += "סך הכל חיילים שחורים: <br>" + this.counterdarkPawn;
+    }
+
     fillArr() {
         for (let i = 0; i < this.boardArr.length; i++) {
             for (let j = 0; j < this.boardArr[i].length; j++) {
@@ -31,6 +39,18 @@ class Board {
             }
         }
         console.log(this.boardArr);
+        for (let i = 0; i < this.cells.length; i++) {
+            for (let j = 0; j < this.cells.length; j++) {
+                if (this.boardArr[i][j] === "red") {
+                    this.counterRedPawn++;
+                }
+                else if (this.boardArr[i][j] === "dark") {
+                    this.counterdarkPawn++;
+                }
+            }
+
+        }
+        this.updaterRedCounter();
     }
 
     drawBoard() {
@@ -93,13 +113,16 @@ class Board {
             this.cells[_i + 1][_j - 1].innerHTML = "";
             this.cells[_i + 2][_j - 2].innerHTML = "";
             this.render();
+            this.counterRedPawn--;
+            this.updaterRedCounter();
 
             this.cells[_i][_j].removeEventListener("click", this.handlerRightEat);
             this.handlerRightEat = null;
             this.resetLine(_i);
+            this.resetLine(_i + 1);
         }
     }
-    
+
     listenerLeftEat(_i, _j) {
         return () => {
             this.boardArr[_i][_j] = "dark";
@@ -108,10 +131,13 @@ class Board {
             this.cells[_i + 1][_j + 1].innerHTML = "";
             this.cells[_i + 2][_j + 2].innerHTML = "";
             this.render();
-            
+            this.counterRedPawn--;
+            this.updaterRedCounter();
+
             this.cells[_i][_j].removeEventListener("click", this.handlerLeftEat);
             this.handlerLeftEat = null;
             this.resetLine(_i);
+            this.resetLine(_i + 1);
         }
     }
 
@@ -200,57 +226,74 @@ class Board {
                 this.handlerRightEat = this.listenerRightEat(_fromI - 2, _fromJ + 2);
                 this.cells[_fromI - 2][_fromJ + 2].addEventListener("click", this.handlerRightEat);
             }
-            if (_fromJ === this.cells.length - 1) {
-                this.drawCelForMove(_fromI - 1, _fromJ - 1);
-            }
-            else if (_fromJ === 0) {
-                this.drawCelForMove(_fromI - 1, _fromJ + 1);
-            }
-            else if (_fromJ !== 0 && _fromJ !== this.cells.length - 1) {
-                this.drawCelForMove(_fromI - 1, _fromJ - 1);
-                this.drawCelForMove(_fromI - 1, _fromJ + 1);
-            }
-            if (_fromJ !== this.boardArr.length - 1 && _fromJ !== 0 && this.collision(_fromI - 1, _fromJ - 1) && this.collision(_fromI - 1, _fromJ + 1)) {
-                console.log("rl");
-                this.rightListener(_fromI, _fromJ, _fromI - 1, _fromJ + 1)
-                this.leftListener(_fromI, _fromJ, _fromI - 1, _fromJ - 1);
-            }
-
-            else if (_fromJ === this.boardArr.length - 1 || this.collision(_fromI - 1, _fromJ - 1)) {
-                console.log("L");
-                this.leftListener(_fromI, _fromJ, _fromI - 1, _fromJ - 1);
-            }
-            else if (_fromJ === 0 || this.collision(_fromI - 1, _fromJ + 1)) {
-                console.log("r");
-                this.rightListener(_fromI, _fromJ, _fromI - 1, _fromJ + 1);
-            }
+                if (_fromJ === this.cells.length - 1) {
+                    this.drawCelForMove(_fromI - 1, _fromJ - 1);
+                }
+                else if (_fromJ === 0) {
+                    this.drawCelForMove(_fromI - 1, _fromJ + 1);
+                }
+                else if (_fromJ !== 0 && _fromJ !== this.cells.length - 1) {
+                    this.drawCelForMove(_fromI - 1, _fromJ - 1);
+                    this.drawCelForMove(_fromI - 1, _fromJ + 1);
+                }
+                if (_fromJ !== this.boardArr.length - 1 && _fromJ !== 0 && this.collision(_fromI - 1, _fromJ - 1) && this.collision(_fromI - 1, _fromJ + 1)) {
+                    console.log("rl");
+                    this.rightListener(_fromI, _fromJ, _fromI - 1, _fromJ + 1)
+                    this.leftListener(_fromI, _fromJ, _fromI - 1, _fromJ - 1);
+                }
+                
+                else if (_fromJ === this.boardArr.length - 1 || this.collision(_fromI - 1, _fromJ - 1)) {
+                    console.log("L");
+                    this.leftListener(_fromI, _fromJ, _fromI - 1, _fromJ - 1);
+                }
+                else if (_fromJ === 0 || this.collision(_fromI - 1, _fromJ + 1)) {
+                    console.log("r");
+                    this.rightListener(_fromI, _fromJ, _fromI - 1, _fromJ + 1);
+                }
+         
         }
     }
-    moveDown(_fromI, _fromJ){
-    
-    }
+
+    // moveDown(){
+    //     // let numRandom = 
+    //     let counter = 0;
+    //     // if(_fromI < this.boardArr.length){
+    //         for (let i = 0; i < this.boardArr.length; i++) {
+    //             for (let j = 0; j < this.boardArr.length; j++) {
+    //                     if(this.boardArr[i][j] === "red"){
+    //                         counter++;
+    //                         this.counterRedPawn++;
+    //                     }                    
+    //             }
+
+    //         }
+    //         console.log("counter: "+counter);
+
+    //     // }
+    // }
 
 
     render() {
+        console.log("this.counterRedPawn: " + this.counterRedPawn);
+
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
                 // this.cells[i][j].innerHTML = "";
                 if (this.cells[i][j].querySelector(".pawn")) continue;
 
                 let pawnDark = document.createElement("img");
-                pawnDark.src = "../files/pawn-dark.png";
+                pawnDark.src = "./files/pawn-dark.png";
                 pawnDark.alt = "pawn dark";
                 pawnDark.classList = "pawn pawn-dark"
 
                 let pawnRed = document.createElement("img");
-                pawnRed.src = "../files/pawn-red.png";
+                pawnRed.src = "./files/pawn-red.png";
                 pawnRed.alt = "pawn light";
                 pawnRed.classList = "pawn pawn-light"
-                let flegClick = false;
                 if (!this.aaa) {
                     this.boardArr[4][4] = "red";
                     this.boardArr[4][2] = "red";
-                    // this.boardArr[3][1] = "red";
+                    this.boardArr[4][6] = "red";
                     this.aaa = true;
                 }
                 if (this.boardArr[i][j] === "dark") this.cells[i][j].appendChild(pawnDark)
@@ -258,6 +301,7 @@ class Board {
                 // if (this.boardArr[i][j] === "true") this.cells[i][j].innerHTML = "";
                 pawnDark.style.boxShadow = "5px 5px 10px 1px #000000";
                 pawnRed.style.boxShadow = "5px 5px 10px 1px #000000";
+                let flegClick = false;
                 pawnDark.addEventListener("click", () => {
                     this.resetBoard();
                     if (!flegClick) {
@@ -269,11 +313,11 @@ class Board {
                         this.cells[i][j].style.border = "none";
                         flegClick = false;
                     }
-                    console.log("i: " + i+", j: " + j);
+                    console.log("i: " + i + ", j: " + j);
                     this.removeLeftListener();
                     this.removeRightListener();
                     this.MoveUp(i, j);
-                }); 
+                });
             }
         }
     }

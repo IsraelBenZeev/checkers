@@ -5,6 +5,7 @@ body{
     background-color: silver;
     min-height: 94vh;
     width: 96vw;
+    flex-direction: column;
 }
 .center{
     display: flex;
@@ -17,7 +18,7 @@ body{
 .container{
     width: 70%;
     margin: auto;
-    flex-direction: column;
+    /* flex-direction: column; */
 }
 .board{
     border: 6px solid rgb(213, 206, 206);
@@ -26,7 +27,7 @@ body{
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
     margin: auto;
-    /* width: 100%; */
+    width: 70%;
     /* gap: 1px; */
     width: fit-content;
     box-shadow: 11px 12px 10px 4px #7d6060;
@@ -48,4 +49,10 @@ body{
 .pawn{
     width: 40px;
     height: 40px;
+}
+.pawns-ded{
+    border: 3px solid red;
+    width: 20%;
+    min-height: 50px;
+    flex-wrap: wrap;
 }
