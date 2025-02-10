@@ -17,7 +17,8 @@ body{
     
     min-height: 96vh;
     background-color: rgb(0, 0, 0);    
-    background-image: url("../files/Checkers10.jpg");
+    background-image: url("../files/Checkers12.jpg");
+
     background-position: center center;
     background-size: cover;
     display: flex; 
@@ -31,7 +32,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%; /* שינינו מ-98vh ל-100% */
-    background-color: rgba(0, 0, 0, 0.301); /* שחור עם שקיפות של 50% */
+    background-color: rgba(0, 0, 0, 0.11); /* שחור עם שקיפות של 50% */
     z-index: 1; /* שכבה מעל הרקע */
 }
 
@@ -43,7 +44,7 @@ body::before {
 .container{
     /* border: 3px solid greenyellow; */
     width: 50%;
-    width: fit-content;
+    /* width: fit-content; */
     height: 100%; 
     flex-direction: column;
     position: relative;
@@ -52,8 +53,9 @@ body::before {
 .top{
     margin-left: 50px;
     /* border: 3px solid rgb(47, 217, 255); */
+    animation: toUp 1s ease forwards;
     width: 100%;
-    align-self: start;
+    /* align-self: start; */
     gap: 100px;
     .welcom{
         width: 100%;
@@ -65,22 +67,41 @@ body::before {
         }
         h1{
             /* color: rgb(107, 70, 52); */
+            font-weight: bold;
             color: var(--Secondary);
             font-size: 60px;
             margin: 0;
             /* margin-bottom: 20px; */
+            -webkit-text-stroke: 1px white;
+            text-stroke: 1px white;
         }
         .btn{
             border: 2px solid var(--Secondary);
-            background-color: var(--primary);
+            background-color: rgba(250, 250, 250, 0);
             color: rgb(137, 144, 151);
             width: 200px;
             box-shadow: 2px 2px 3px 1px #000000;
             height: 35px;
             border-radius: 5px;
             padding: 3px;
+            font-size: larger;
+            transition: all 1s;
 
         }
+        .btn:hover{
+            background-color: aliceblue;
+            color: #000000;
+        }
+    }
+}
+@keyframes toUp {
+    from {
+        opacity: 0;
+        transform: translateY(+100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 footer{

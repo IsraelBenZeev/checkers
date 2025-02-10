@@ -6,7 +6,9 @@
 body{
     min-height: 95vh;
     width: 95vw;
-    background-color: rgba(192, 192, 192, 0.201);
+    background-image: url("../files/Checkers11.jpg");
+    background-position: center center;
+    background-size: cover;
     
 }
 
@@ -32,7 +34,7 @@ form{
 }
 .log-in, .sign-up{
     width: 100%;
-    border-top: 40px solid var(--primary);
+    /* border-top: 40px solid var(--primary); */
 }
 .containerTitle{
     width: 100%;

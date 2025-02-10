@@ -1,6 +1,7 @@
 :root {
-    --primary: rgb(74, 7, 7);
+    /* --primary: rgb(74, 7, 7); */
+    --primary: rgb(163, 159, 159);
     --primary_2: rgb(107, 53, 31);
-    --Secondary: rgb(234, 206, 172);
+    --Secondary: black;
     --Secondary_2: red;
 }

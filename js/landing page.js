@@ -1,4 +1,4 @@
-const getStarted = document.querySelector("#getStartef_btn");
+const getStarted = document.querySelector("#getStarted_btn");
 getStarted.addEventListener("click", ()=>{
-    window.location.href = "log-in.html";
-})
+    window.location.href = "./log-in.html";
+});
