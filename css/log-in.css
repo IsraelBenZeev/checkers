@@ -23,7 +23,7 @@ body{
 }
 .container{
     background-color: white;
-    width: 100%;
+    /* width: 100%; */
     width: 40%;
     padding: 0;
 }
@@ -77,4 +77,10 @@ input{
 .enter{
     color: var(--primary);
     text-decoration: underline;
+}
+
+@media (max-width: 681px) {
+    .container{
+        width: 100%;
+    }
 }
