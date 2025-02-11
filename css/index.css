@@ -1,7 +1,8 @@
-*{
+* {
     box-sizing: border-box;
 }
-body{
+
+body {
     background-color: silver;
     min-height: 94vh;
     width: 96vw;
@@ -13,45 +14,84 @@ body{
     background-size: cover;
 }
 
-/* הוספת שכבת רקע עם תמונה */
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url("../files/background10.jpg");
-    background-position: center center;
-    background-size: cover;
-    opacity: 80; /* שיניתי את השקיפות ל-0.15 (15%) */
-    z-index: -1;
-}
-
-.center{
+.center {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.hide{
+
+.hide {
     display: none;
 }
-.container{
-    width: 70%;
+
+.container {
+    width: 100%;
     margin: auto;
-    /* flex-direction: column; */
-    position: relative;
+    /* position: relative; */
     z-index: 1;
-    gap: 30px;
+    display: grid;
+    grid-template-areas:
+        "name name title buttons"
+        "txt txt board buttons"
+        "left right board buttons"
+        "timer timer board buttons";
+    gap: 10px;
 }
-.logo{
-    width: 100px;
-    /* בחר אחת מהאפשרויות - או grid-column או grid-area */
-    /* grid-area: logo; מומלץ להשתמש בזה אם אתה משתמש ב-grid-template-areas */
-    grid-column: span 2;
-    margin-bottom: 50px;
+
+.hamburger {
+    display: none;
+    width: 30px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
-.name{
+
+.close {
+    width: 30px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.buttons2 {
+    background-color: rgba(66, 70, 73, 0.417);
+    position: absolute;
+    top: 0px;
+    right: -15px;
+    width: 110px;
+    height: 100vh;
+    z-index: 200;
+    display: none;
+    flex-direction: column;
+    align-items: start;
+    gap: 20px;
+    animation: toLeft 1s;
+
+    button {
+        width: 100%;
+        align-items: start;
+    }    
+}
+@keyframes toLeft {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+.logo {
+    width: 90px;
+    position: absolute;
+    top: 60px;
+    justify-self: center;
+}
+
+.logo {
+    width: 120px;
+}
+
+.name {
     grid-area: name;
     color: rgb(50, 58, 64);
     font-weight: bold;
@@ -59,94 +99,90 @@ body::before {
     background-color: rgba(240, 248, 255, 0.407);
     border-radius: 3px;
 }
-main{
-    flex-direction: column;
+
+.title {
+    grid-area: title;
 }
-.board{
+
+.board {
     border: 6px solid rgb(213, 206, 206);
     border-radius: 6px;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
-    margin: auto;
-    width: 70%;
-    /* gap: 1px; */
     width: fit-content;
-    box-shadow: 11px 12px 10px 4px #7d6060;
+    box-shadow: 11px 12px 10px 4px rgb(41, 88, 108);
+    grid-area: board;
+    ;
 }
-.cell{
+
+.cell {
     height: 50px;
     width: 50px;
 }
-.cell-light{
+
+.cell-light {
     /* background-image: url("../files/backGround-light.png"); */
     background-color: rgb(165, 175, 176);
 }
-.cell-dark{
+
+.cell-dark {
     /* background-image: url("../files/backGround-dark.png"); */
     background-color: rgb(41, 88, 108);
-    
+
 }
-.change{
+
+.change {
     background-color: rgb(0, 127, 197);
 }
+
 .selected {
     background-color: red;
 }
-.pawn, .king{
+
+.pawn,
+.king {
     width: 40px;
     height: 40px;
 }
-/* .pawn-dark{
-    width: 60px;
-    height: 60px;
 
-} */
-.information{
-    gap: 10px;
-    align-self: center;
-    gap: 3px;
-    grid-area: pawns;
-    display: grid;
-    grid-template-areas: 
-
-    "logo logo"
-    "name name"
-    "pawns pawns"
-    "left right"
-    "timer timer";
-    p{
-        grid-column: span 2;
-        /* border: 2px solid red; */
-        text-align: center;
-        font-size: x-large;
-        font-weight: bold;
-        color: rgb(42, 26, 26);
-    }
+.txt {
+    grid-column: span 2;
+    /* border: 2px solid red; */
+    text-align: center;
+    font-size: x-large;
+    font-weight: bold;
+    grid-area: txt;
+    color: rgb(42, 26, 26);
 }
-.pawns-red-ded, .pawns-dark-ded {
+
+.pawns-red-ded,
+.pawns-dark-ded {
     background-color: rgba(66, 70, 73, 0.417);
     border-radius: 5px;
     min-width: 100px;
     min-height: 50px;
     flex-direction: column;
     flex-wrap: wrap;
-    padding: 5px;
-    color: white; /* הוספת צבע לטקסט */
-    text-align: center; /* מרכוז הטקסט */
+    /* padding: 5px; */
+    color: white;
+    text-align: center;
 }
-.pawns-dark-ded{
+
+.pawns-dark-ded {
     grid-area: left;
 }
-.pawns-red-ded{
+
+.pawns-red-ded {
     grid-area: right;
 }
 
-.pawns-red-ded div, .pawns-dark-ded div {
-    margin-bottom: 5px; /* מרווח בין הכותרת לתמונות */
-    font-weight: bold; /* הדגשת הטקסט */
+.pawns-red-ded div,
+.pawns-dark-ded div {
+    font-weight: bold;
 }
-.timer{
+
+.timer {
     grid-column: span 2;
     grid-area: timer;
     font-size: x-large;
@@ -155,11 +191,61 @@ main{
     background-color: rgba(66, 70, 73, 0.417);
     border-radius: 5px;
 }
-.buttuns{
+
+.buttons {
+    grid-area: buttons;
     margin: 0 20px;
     flex-direction: column;
     gap: 20px;
-    button{
+
+    button {
         width: 120px;
     }
+}
+
+
+@media (max-width: 681px) {
+    body{
+        background-position: center bottom;
+        background-repeat: no-repeat;
+    }
+    .container {
+        /* background-color: aqua; */
+        grid-template-areas:
+        "logo logo"
+            "title title"
+            "name timer"
+            "board board"
+            "left left"
+            "right right";
+    }
+
+    .pawns-red-ded,
+    .pawns-dark-ded {
+        flex-direction: row;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .buttons {
+        display: none;
+    }
+
+    .txt {
+        display: none;
+    }
+
+    .cell {
+        height: 40px;
+        width: 40px;
+    }
+
+    .pawn,
+    .king {
+        width: 30px;
+        height: 30px;
+    }
+
 }

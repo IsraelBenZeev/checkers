@@ -5,23 +5,33 @@ const drawBord = new Board(".board", 8,8);
 drawBord.drawBoard();
 drawBord.render();
 drawBord.updaterRedCounter();
-const buttons = document.querySelectorAll("button");
-const home = buttons[0];
-const restart = buttons[1];
-home.addEventListener("click", () => {
+const home = () => {
     window.location.href="landing page.html"
-});
-restart.addEventListener("click", ()=>{
+};
+const restart = ()=>{
     window.location.reload()
-})
-const name = document.querySelector(".name");
-name.textContent = "user name:" + localStorage.getItem("username");
-const clear = document.querySelector(".clear");
-clear.addEventListener("click", ()=>{
+};
+const clearLocalStore = ()=>{
     localStorage.clear();
+};
+
+
+const hamburger = document.querySelector(".hamburger");
+const close = document.querySelector(".close");
+const buttons2 = document.querySelector(".buttons2");
+hamburger.addEventListener("click",()=>{
+    buttons2.style.display = "flex";
+    hamburger.style.display = "none"
+})
+close.addEventListener("click", ()=>{
+    buttons2.style.display = "none";
+    hamburger.style.display = "flex";
+
 })
 // drawBord.moveDownLeft(); 
 
 
 // const pawnsDed = document.querySelector(".pawns-ded");
 // pawnsDed.innerHTML = "סך הכל חיילים אדומים: <br>"+drawBord.counterRedPawn;
+const name = document.querySelector(".name");
+name.textContent = "user name:" + localStorage.getItem("username");

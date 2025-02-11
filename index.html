@@ -14,25 +14,35 @@
 
 <body class="center">
     <div class="container center">
-        <div class="information center">
-            <img class="logo" src="./files/logo.png" alt="">
-            <div class="name center"></div>
-            <p>חיילים שנאכלו</p>
-            <div class="pawns-red-ded center"></div>
-            <div class="pawns-dark-ded center"></div>
-            <div class="timer center"></div>
-        </div>
-        <main class="center">
-            <h1 class="text-center display-4 fw-bold mt-3 mb-4 center">Cherkers Game</h1>
+        <img class="hamburger" src="./files/hamburger.png" alt="icon hamburger">
+        <!-- <div class="information center"> -->
+        <div class="name center"></div>
+        <p class="txt">חיילים שנאכלו</p>
+        <div class="pawns-red-ded center"></div>
+        <div class="pawns-dark-ded center"></div>
+        <div class="timer center"></div>
+        <!-- </div> -->
+        <!-- <main class="main center"> -->
+        <h1 class="title text-center display-4 fw-bold mt-3 mb-4 center">Cherkers Game</h1>
         <div class="board"></div>
-        </main>
-        <div class="buttuns center">
-            <button class="btn btn-dark">home</button>
-            <button class="btn btn-dark">restart</button>
+        <!-- </main> -->
+        <img class="logo" src="./files/logo.png" alt="">
+        <div class="buttons center">
+            <button class="btn btn-dark" onclick="home()">home</button>
+            <button class="btn btn-dark" onclick="restart()">restart</button>
             <button class="btn btn-dark">insractions</button>
             <button class="btn btn-dark">board results</button>
-            <button class="btn btn-dark clear">clear</button>
+            <button class="btn btn-dark clear" onclick="clearLocalStore()">clear</button>
         </div>
+    </div>
+    <div class="buttons2 center">
+        <img class="close" src="./files/icon_clos.png" alt="">
+        <!-- <img class="logo" src="./files/logo.png" alt=""> -->
+        <button id="home2" class="btn btn-dark">home</button>
+        <button id="restart2" class="btn btn-dark">restart</button>
+        <button class="btn btn-dark">insractions</button>
+        <button class="btn btn-dark">results</button>
+        <button class="btn btn-dark clear">clear</button>
     </div>
 </body>
 
