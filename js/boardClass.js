@@ -27,22 +27,7 @@ class Board {
         this.arrSave = [];
         this.startGame = !localStorage.getItem('indexes'); // שינוי כאן - יהיה true רק אם אין מידע בלוקאל סטורג'
         this.timerGame = null;
-        this.second = 0;
-        this.minute = 0;  // תיקון שם המשתנה מ-minut ל-minute
-        this.startTimer();  // קריאה לפונקציה חדשה שתתחיל את הטיימר
     };
-    
-    startTimer() {
-        this.timerGame = setInterval(() => {
-            this.second++;
-            if (this.second === 60) {
-                this.second = 0;
-                this.minute++;
-            }
-            const timer = document.querySelector(".timer");
-            timer.textContent = "Timer: " + String(this.minute).padStart(2, '0') + ":" + String(this.second).padStart(2, '0');
-        }, 1000);
-    }
 
     updaterRedCounter() {
         const pawnsDed = document.querySelector(".pawns-red-ded");
@@ -101,6 +86,7 @@ class Board {
             for (let j = 0; j < this.cells[i].length; j++) {
                 if (this.boardArr[i][j] === "dark" || this.boardArr[i][j] === "true") {
                     this.cells[i][j].style.backgroundColor = COLOR_BOARD_DARK;
+                    this.cells[i][j].style.border = "none";
                 }
             }
         }
@@ -161,6 +147,7 @@ class Board {
                 this.boardArr[_i][_j] = "kingDark";
                 // this.boardArr[_i][_j] = "dark";
                 console.log("המלך הגיע!!!!!!!!!!!!!");
+                console.log("boardarr: " + this.boardArr);
 
             }
             else {
@@ -194,6 +181,8 @@ class Board {
                 this.boardArr[_i][_j] = "kingDark";
                 // this.boardArr[_i][_j] = "dark";
                 console.log("המלך הגיע!!!!!!!!!!!!!");
+                console.log("boardarr: " + this.boardArr);
+
 
             }
             else {
@@ -255,6 +244,7 @@ class Board {
             if (_toI === 0) {
                 this.boardArr[_toI][_toJ] = "kingDark";
                 console.log("המלך הגיע!!!!!!!!!!!!!");
+                console.log("boardarr: " + this.boardArr);
             }
             else {
                 this.boardArr[_toI][_toJ] = "dark";
@@ -274,7 +264,7 @@ class Board {
     drawCelForMove(_i, _j) {
         if (this.boardArr[_i][_j] == "true") {
             this.cells[_i][_j].style.backgroundColor = "rgb(0, 127, 197)";
-            
+
             // this.cells[_i][_j].classList = "chang center";
         }
     }
@@ -364,6 +354,32 @@ class Board {
         }
         return false;
     }
+
+    moveKing(_i, _j) {
+        if (_i != this.row-1) {
+            if (this.isRedMoveLeft(_i, _j)) {
+                console.log("king can left");
+                
+                this.boardArr[_i][_j] = "true";
+                this.cells[_i][_j].innerHTML = "";
+                this.boardArr[_i + 1][_j - 1] = "kingDark";
+                this.myTimer = 0;
+                this.render();
+            }
+            if (this.isRedMoveRight(_i, _j)) {
+                console.log("king can right");
+                
+                setTimeout(() => {
+                    this.boardArr[_i][_j] = "true";
+                    this.cells[_i][_j].innerHTML = "";
+                    this.boardArr[_i + 1][_j + 1] = "kingDark"; // תיקון שם המשתנה
+                    this.myTimer = 0;
+                    this.render();
+                }, this.computerDelay);
+            }
+        }
+    }
+
     moveDown() {
         let arrRed = [];
         for (let i = 0; i < this.boardArr.length; i++) {
@@ -511,6 +527,17 @@ class Board {
                             this.cells[i][j].style.borderRadius = "5px"
                             this.MoveUp(i, j);
                         });
+                    }
+                    else if (this.boardArr[i][j] === "kingDark") {
+                        this.cells[i][j].firstElementChild.addEventListener("click", () => {
+                            // this.resetBoard();
+                            this.removeRightListener();
+                            this.removeLeftListener();
+                            this.cells[i][j].style.border = "2px solid white";
+                            this.cells[i][j].style.borderRadius = "5px"
+                            this.moveKing(i, j);
+                        });
+
                     }
                 }
             }

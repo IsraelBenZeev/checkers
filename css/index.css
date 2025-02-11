@@ -40,37 +40,42 @@ body {
 
 .hamburger {
     display: none;
-    width: 30px;
+    width: 40px;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 20px;
+    right: 5px;
 }
 
 .close {
-    width: 30px;
+    font-size: 60px;
+    width: 100px;
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 80px;
+    right: 85px;
+}
+.logo2 {
+    width: 140px;
 }
 
 .buttons2 {
-    background-color: rgba(66, 70, 73, 0.417);
+    background-color: rgba(66, 70, 73, 0.657);
     position: absolute;
     top: 0px;
-    right: -10px;
-    width: 110px;
-    height: 100vh;
+    right: -17px;
+    width: 320px;
+    height: 793px;
     z-index: 200;
     padding: 5px;
     display: none;
     flex-direction: column;
-    align-items: start;
-    gap: 20px;
-    animation: toLeft 1s;
+    
+    gap: 25px;
+    animation: toLeft 0.5s;
 
     button {
-        width: 100%;
+        width: 80%;
         align-items: start;
+        /* background-color: rgb(165, 175, 176); */
     }
 }
 
@@ -91,9 +96,6 @@ body {
     justify-self: center;
 }
 
-.logo2 {
-    width: 100px;
-}
 
 .name {
     grid-area: name;
@@ -258,6 +260,9 @@ body {
     .king {
         width: 30px;
         height: 30px;
+    }
+    .timer, .name{
+        font-size: small;
     }
 
 }
