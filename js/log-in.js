@@ -36,7 +36,7 @@ const updetVal = () => {
 const submit = (e) => {
     e.preventDefault(); // מונע את רענון הדף
     if (!loginPage && checkName() && checkMail()) {
-        window.location.href = "index.html";
+        window.location.href = "index2.html";
         updatLocalStor();
     }
     else if (loginPage && checkAll()) {
