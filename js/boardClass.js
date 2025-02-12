@@ -140,7 +140,7 @@ class Board {
     }
 
     checkEatOpponentRightDown(_i, _j) {
-        if (_i !== this.cells.length-1) {
+        if (_i !== this.cells.length - 1) {
             if (this.boardArr[_i][_j] === "red") {
                 if (this.boardArr[(_i + 1)][(_j + 1)] === "true") {
                     return true;
@@ -198,9 +198,9 @@ class Board {
     listenerLeftEatDown(_i, _j) {
         return () => {
             // if (_i === 0) {
-                this.boardArr[_i][_j] = "kingDark";
-                console.log("המלך הגיע!!!!!!!!!!!!!");
-                console.log("boardarr: " + this.boardArr);
+            this.boardArr[_i][_j] = "kingDark";
+            console.log("המלך הגיע!!!!!!!!!!!!!");
+            console.log("boardarr: " + this.boardArr);
             // }
             // else {
             //     this.boardArr[_i][_j] = "dark";
@@ -297,6 +297,8 @@ class Board {
 
 
     leftListener(_fromI, _fromJ, _toI, _toJ) {
+        console.log("entered left listener");
+
         this.handlerLeft = () => this.movePawn(_fromI, _fromJ, _toI, _toJ);
         this.cells[_toI][_toJ].addEventListener("click", this.handlerLeft);
         this.indexesLisLeft[0] = _toI;
@@ -324,38 +326,41 @@ class Board {
             this.handlerRight = null;
         }
     }
-
+    isKingDark(_i, _j) {
+        return this.boardArr[_i][_j] === "kingDark";
+    }
 
     movePawn(_fromI, _fromJ, _toI, _toJ) {
-        if (this.boardArr[_toI][_toJ] === "true") {
-            if (_toI === 0) {
+        console.log("entered move pawn");
+        if (_toI !== 0) {
+            if (this.isKingDark(_fromI, _fromJ)) {
                 this.boardArr[_toI][_toJ] = "kingDark";
-                console.log("המלך הגיע!!!!!!!!!!!!!");
-                console.log("boardarr: " + this.boardArr);
             }
-            else {
+            else if (!this.isKingDark(_fromI, _fromJ)) {
                 this.boardArr[_toI][_toJ] = "dark";
             }
-            this.boardArr[_fromI][_fromJ] = "true";
-            this.cells[_fromI][_fromJ].innerHTML = "";
-
-            this.render();
-            this.resetLine(_toI);
-
-            setTimeout(() => {
-                this.myTimer = 0;
-                this.moveDown();
-            }, this.computerDelay);
         }
+        else if (_toI === 0) {
+            this.boardArr[_toI][_toJ] = "kingDark";
+        }
+        this.boardArr[_fromI][_fromJ] = "true";
+        this.cells[_fromI][_fromJ].innerHTML = "";
+
+        this.render();
+        this.resetLine(_toI);
+
+        setTimeout(() => {
+            this.myTimer = 0;
+            this.moveDown();
+        }, this.computerDelay);
     }
 
     drawCelForMove(_i, _j) {
         if (this.boardArr[_i][_j] == "true") {
             this.cells[_i][_j].style.backgroundColor = "rgb(0, 127, 197)";
-
-            // this.cells[_i][_j].classList = "chang center";
         }
     }
+
     collision(_i, _j) {
         if (this.boardArr[_i][_j] === "true") return true;
         return false;
@@ -407,9 +412,8 @@ class Board {
     }
     isRedCanEatLeft(_i, _j) {
         if (_i + 2 < this.cells.length && _j - 2 >= 0) {
-            if (this.boardArr[_i + 1][_j - 1] === "dark") {
+            if (this.boardArr[_i + 1][_j - 1] === "dark" || this.isKingDark(_i + 1, _j - 1)) {
                 if (this.boardArr[_i + 2][_j - 2] === "true") {
-                    console.log("cannnnnn");
                     return true;
                 }
             }
@@ -418,7 +422,7 @@ class Board {
     }
     isRedCanEatRight(_i, _j) {
         if (_i + 2 < this.cells.length && _j + 2 < this.cells.length) {
-            if (this.boardArr[_i + 1][_j + 1] === "dark") {
+            if (this.boardArr[_i + 1][_j + 1] === "dark" || this.isKingDark(_i + 1, _j + 1)) {
                 if (this.boardArr[_i + 2][_j + 2] === "true") {
                     return true;
                 }
@@ -435,7 +439,7 @@ class Board {
         return false;
     }
     isRedMoveLeft(_i, _j) {
-        if (_i < this.cells.length-1 && _j - 1 < this.cells.length) {
+        if (_i < this.cells.length - 1 && _j - 1 < this.cells.length) {
             if (this.boardArr[_i + 1][_j - 1] === "true") {
                 return true;
             }
@@ -444,6 +448,7 @@ class Board {
     }
 
     moveKing(_i, _j) {
+
         if (this.checkEatOpponentLeftDwon(_i + 1, _j - 1)) {
             console.log("king eat L");
             this.drawCelForMove(_i + 2, _j - 2);
@@ -484,19 +489,24 @@ class Board {
         }
     }
 
+    lightToKing(_i, _j) {
+        if (_i === this.boardArr.length - 1) this.boardArr[_i][_j] = "kingLight";
+    }
+
+    isKingRed(_i, _j) {
+        return this.boardArr[_i][_j] === "kingRed";
+    }
     moveDown() {
         let arrRed = [];
         for (let i = 0; i < this.boardArr.length; i++) {
             for (let j = 0; j < this.boardArr[i].length; j++) {
-                if (this.boardArr[i][j] === "red") {
+                if (this.boardArr[i][j] === "red" || this.isKingRed(i, j)) {
                     arrRed.push({ i, j });
                 }
             }
         }
-
         for (let k = 0; k < arrRed.length; k++) {
             const currentPawn = arrRed[k];
-
             if (this.isRedCanEatLeft(currentPawn.i, currentPawn.j)) {
                 const fromI = currentPawn.i;
                 const fromJ = currentPawn.j;
@@ -504,11 +514,19 @@ class Board {
                 const toJ = fromJ - 2;
 
                 setTimeout(() => {
-                    this.cells[fromI][fromJ].innerHTML = "";
-                    this.cells[fromI + 1][fromJ - 1].innerHTML = "";
+                    // קודם נציב את החייל האדום במיקום החדש
+                    if (this.isKingRed(fromI, fromJ) || toI === this.boardArr.length - 1) {
+                        this.boardArr[toI][toJ] = "kingRed";
+                    } else {
+                        this.boardArr[toI][toJ] = "red";
+                    }
+
+                    // רק אז נמחק את המיקום הישן ואת החייל שנאכל
                     this.boardArr[fromI][fromJ] = "true";
                     this.boardArr[fromI + 1][fromJ - 1] = "true";
-                    this.boardArr[toI][toJ] = "red";
+                    this.cells[fromI][fromJ].innerHTML = "";
+                    this.cells[fromI + 1][fromJ - 1].innerHTML = "";
+
                     this.counterDarkPawn--;
                     this.updaterDarkCounter();
                     this.render();
@@ -524,52 +542,66 @@ class Board {
                 const toJ = fromJ + 2;
 
                 setTimeout(() => {
+                    // קודם נציב את החייל האדום במיקום החדש
+                    if (this.isKingRed(fromI, fromJ) || toI === this.boardArr.length - 1) {
+                        this.boardArr[toI][toJ] = "kingRed";
+                    } else {
+                        this.boardArr[toI][toJ] = "red";
+                    }
+
+                    // רק אז נמחק את המיקום הישן ואת החייל שנאכל
+                    this.boardArr[fromI][fromJ] = "true";
+                    this.boardArr[fromI + 1][fromJ + 1] = "true";
                     this.cells[fromI][fromJ].innerHTML = "";
                     this.cells[fromI + 1][fromJ + 1].innerHTML = "";
 
-                    this.boardArr[fromI][fromJ] = "true";
-                    this.boardArr[fromI + 1][fromJ + 1] = "true";
-
-                    this.boardArr[toI][toJ] = "red";
                     this.counterDarkPawn--;
                     this.updaterDarkCounter();
                     this.render();
                     this.myTimer = 1;
-
                 }, this.computerDelay);
                 return;
             }
         }
+        const kingMoved = this.moveKingRedUp();
+        if (kingMoved) {
+            return;
+        }
+
         let arrMoveREd = [];
         for (let i = 0; i < arrRed.length; i++) {
             if (this.isRedMoveLeft(arrRed[i].i, arrRed[i].j) || this.isRedMoveRight(arrRed[i].i, arrRed[i].j)) {
                 arrMoveREd.push({ i: arrRed[i].i, j: arrRed[i].j });
             }
         }
-        
+
         // בדיקה שיש תזוזות אפשריות
         if (arrMoveREd.length === 0) {
             console.log("אין לאן לזוז");
-            
             this.myTimer = 1;
             return;
         }
 
         let random = Math.floor(Math.random() * arrMoveREd.length);
         let pawnCurrent = arrMoveREd[random];
-        
+
         if (this.isRedMoveLeft(pawnCurrent.i, pawnCurrent.j)) {
             const fromI = pawnCurrent.i;
             const fromJ = pawnCurrent.j;
             setTimeout(() => {
                 this.cells[fromI][fromJ].innerHTML = "";
                 this.boardArr[fromI][fromJ] = "true";
-                this.boardArr[fromI + 1][fromJ - 1] = "red";
+                if (this.isKingRed(fromI, fromJ) || fromI + 1 === this.boardArr.length - 1) {
+                    this.boardArr[fromI + 1][fromJ - 1] = "kingRed";
+                } else {
+                    this.boardArr[fromI + 1][fromJ - 1] = "red";
+                }
                 this.render();
                 this.myTimer = 1;
             }, this.computerDelay);
             return;
         }
+
 
         else if (this.isRedMoveRight(pawnCurrent.i, pawnCurrent.j)) {
             const fromI = pawnCurrent.i;
@@ -577,13 +609,141 @@ class Board {
             setTimeout(() => {
                 this.cells[fromI][fromJ].innerHTML = "";
                 this.boardArr[fromI][fromJ] = "true";
-                this.boardArr[fromI + 1][fromJ + 1] = "red";
+                if (this.isKingRed(fromI, fromJ) || fromI + 1 === this.boardArr.length - 1) {
+                    this.boardArr[fromI + 1][fromJ + 1] = "kingRed";
+                } else {
+                    this.boardArr[fromI + 1][fromJ + 1] = "red";
+                }
                 this.render();
                 this.myTimer = 1;
             }, this.computerDelay);
             return;
         }
+
     }
+
+    moveKingRedUp() {
+        let kingsCanMove = [];
+        for (let i = 0; i < this.boardArr.length; i++) {
+            for (let j = 0; j < this.boardArr.length; j++) {
+                if (this.isKingRed(i, j)) {
+                    if (this.isKingCanEatLeftUp(i, j) || this.isKingCanEatRightUp(i, j) || this.isKingRedMoveLeftUp(i, j) || this.isKingRedMoveRightUp(i, j)) {
+                        kingsCanMove.push({ i, j });
+                    }
+                }
+            }
+        }
+        let randomKing = Math.floor(Math.random() * kingsCanMove.length);
+        let kingCurrent = kingsCanMove[randomKing];
+        let existKings = kingsCanMove.length > 0;  // התיקון כאן
+
+        if (existKings && this.isKingCanEatLeftUp(kingCurrent.i, kingCurrent.j)) {
+            console.log("יש אכילה בשמאל");
+
+            const fromI = kingCurrent.i;
+            const fromJ = kingCurrent.j;
+            setTimeout(() => {
+                this.cells[fromI][fromJ].innerHTML = "";
+                this.boardArr[fromI][fromJ] = "true";
+                this.boardArr[fromI - 1][fromJ - 1] = "true";
+                this.cells[fromI - 1][fromJ - 1].innerHTML = "";
+                this.boardArr[fromI - 2][fromJ - 2] = "kingRed";
+
+                this.render();
+                this.myTimer = 1;
+            }, this.computerDelay);
+            return true;
+        }
+        if (existKings && this.isKingCanEatRightUp(kingCurrent.i, kingCurrent.j)) {
+            console.log("יש אכילה בימין");
+            const fromI = kingCurrent.i;
+            const fromJ = kingCurrent.j;
+            setTimeout(() => {
+                this.cells[fromI][fromJ].innerHTML = "";
+                this.boardArr[fromI][fromJ] = "true";
+                this.boardArr[fromI - 1][fromJ + 1] = "true";
+                this.cells[fromI - 1][fromJ + 1].innerHTML = "";
+                this.boardArr[fromI - 2][fromJ + 2] = "kingRed";
+
+                this.render();
+                this.myTimer = 1;
+            }, this.computerDelay);
+            return true;
+        }
+
+        if (existKings && this.isKingRedMoveLeftUp(kingCurrent.i, kingCurrent.j)) {
+            console.log("יש תנועה בשמאל");
+            const fromI = kingCurrent.i;
+            const fromJ = kingCurrent.j;
+
+            setTimeout(() => {
+                this.cells[fromI][fromJ].innerHTML = "";
+                this.boardArr[fromI][fromJ] = "true";
+                this.boardArr[fromI - 1][fromJ - 1] = "kingRed";
+
+                this.render();
+                this.myTimer = 1;
+            }, this.computerDelay);
+            return true;
+        }
+
+        if (existKings && this.isKingRedMoveRightUp(kingCurrent.i, kingCurrent.j)) {
+            console.log("יש תנועה בימין");
+            const fromI = kingCurrent.i;
+            const fromJ = kingCurrent.j;
+
+            setTimeout(() => {
+                this.cells[fromI][fromJ].innerHTML = "";
+                this.boardArr[fromI][fromJ] = "true";
+                this.boardArr[fromI - 1][fromJ + 1] = "kingRed";
+
+                this.render();
+                this.myTimer = 1;
+            }, this.computerDelay);
+            return true;
+        }
+        return false; // אם לא בוצע אף מהלך עם מלך
+    }
+
+    isKingRedMoveLeftUp(_i, _j) {
+        if (_i !== 0 && _j >= 1) {
+            if (this.boardArr[_i - 1][_j - 1] === "true") {
+                return true;
+            }
+        }
+        return false;
+    }
+    isKingRedMoveRightUp(_i, _j) {
+        if (_i !== 0 && _j < this.boardArr.length - 2) {
+            if (this.boardArr[_i - 1][_j + 1] === "true") {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    isKingCanEatLeftUp(_i, _j) {
+        if (_i > 1 && _j > 1) {
+            if (this.boardArr[_i - 1][_j - 1] === "dark" || this.boardArr[_i - 1][_j - 1] === "kingDark") {
+                if (this.boardArr[_i - 2][_j - 2] === "true")
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    isKingCanEatRightUp(_i, _j) {
+        if (_i > 1 && _j < this.boardArr.length - 2) {
+            if (this.boardArr[_i - 1][_j + 1] === "dark" || this.boardArr[_i - 1][_j + 1] === "kingDark") {  // הוספת בדיקה למלך שחור
+                if (this.boardArr[_i - 2][_j + 2] === "true") {
+                    console.log("נמצאה אפשרות אכילה ימינה למעלה");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     render() {
         // this.arrSave = this.boardArr;
@@ -625,9 +785,15 @@ class Board {
                 kingDark.alt = "king";
                 kingDark.classList = "king pawn-dark"
 
+                let kingRed = document.createElement("img");
+                kingRed.src = "./files/king-light.png";
+                kingRed.alt = "king";
+                kingRed.classList = "king pawn-light"
+
                 if (this.boardArr[i][j] === "dark") this.cells[i][j].appendChild(pawnDark)
                 if (this.boardArr[i][j] === "red") this.cells[i][j].appendChild(pawnRed)
                 if (this.boardArr[i][j] === "kingDark") this.cells[i][j].appendChild(kingDark)
+                if (this.boardArr[i][j] === "kingRed") this.cells[i][j].appendChild(kingRed)
 
                 this.removeRightListener();
                 this.removeLeftListener();
@@ -652,6 +818,7 @@ class Board {
                             this.cells[i][j].style.border = "2px solid white";
                             this.cells[i][j].style.borderRadius = "5px"
                             this.moveKing(i, j);
+                            // this.MoveUp(i, j);
                         });
 
                     }
