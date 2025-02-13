@@ -1,4 +1,10 @@
 const COLOR_BOARD_DARK = "rgb(41, 88, 108)";
+// import Sound from "./soundClass";
+
+async function loadSound() {
+    const Sound = await import('./soundClass.js');
+    return Sound.default;
+}
 
 class Board {
     constructor(_parent, _row, _col) {
@@ -27,8 +33,19 @@ class Board {
         this.arrSave = [];
         this.startGame = !localStorage.getItem('indexes'); // שינוי כאן - יהיה true רק אם אין מידע בלוקאל סטורג'
         this.timerGame = null;
+        this.indexUser = this.returnIndexOfCurrentUser();
+        this.sound = null; // במקום ליצור את האובייקט, נאתחל אותו כ-null
+        this.initSound(); // נקרא לפונקציה שתיצור את האובייקט
+    }
 
-    };
+    async initSound() {
+        try {
+            const SoundModule = await import('./soundClass.js');
+            this.sound = new SoundModule.default("./files/sounds/click.wav");
+        } catch (error) {
+            console.error("Could not load sound module:", error);
+        }
+    }
 
     updaterRedCounter() {
         const pawnsDed = document.querySelector(".pawns-red-ded");
@@ -49,25 +66,20 @@ class Board {
             pawnsDed.innerHTML += `<img src="./files/dark.png" style="width: 30px; margin: 2px 0">`;
         }
     }
-
-    fillArr() {
-        const savedBoard = JSON.parse(localStorage.getItem('indexes'));
-        if (savedBoard) {
-            this.boardArr = savedBoard;
-            this.startGame = false;
-            return;
-        }
-        for (let i = 0; i < this.boardArr.length; i++) {
-            for (let j = 0; j < this.boardArr[i].length; j++) {
-                if ((j + i) % 2 == 0) {
-                    if (i <= 2) this.boardArr[i][j] = "red";
-                    if (i >= 5) this.boardArr[i][j] = "dark";
-                    else if (i > 2 && i < 5) this.boardArr[i][j] = "true"
-                }
+    returnIndexOfCurrentUser() {
+        const usersData = JSON.parse(localStorage.getItem("users")) || [];
+        const currentUser = localStorage.getItem("currentUser");
+        for (let i = 0; i < usersData.length; i++) {
+            if (usersData[i].username === currentUser) { 
+                return i;
             }
         }
-        console.log(this.boardArr);
-        this.startGame = false;
+        return -1;
+    }
+
+    fillArr() {
+        const usersData = JSON.parse(localStorage.getItem("users"));
+        this.boardArr = usersData[this.indexUser].dataGame;
     }
 
     drawBoard() {
@@ -746,20 +758,11 @@ class Board {
 
 
     render() {
-        // this.arrSave = this.boardArr;
-        localStorage.setItem('indexes', JSON.stringify(this.boardArr)); console.log("my timer:" + this.myTimer);
+       const users = JSON.parse(localStorage.getItem("users"));
+       users[this.indexUser].dataGame = this.boardArr;
+       localStorage.setItem("users", JSON.stringify(users));
+    
 
-        console.log("counter red: " + this.counterRedPawn);
-        console.log("counter dark: " + this.counterDarkPawn);
-
-        const savedBoard = JSON.parse(localStorage.getItem('indexes'));
-        console.log("boardAA" + this.boardArr);
-        console.log("savedBoard" + savedBoard);
-        if (savedBoard) {
-            console.log("llllllllllllllll");
-
-            this.boardArr = savedBoard;
-        }
 
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
@@ -800,8 +803,8 @@ class Board {
                 if (this.myTimer === 1) {
 
                     if (this.boardArr[i][j] === "dark") {
-
                         this.cells[i][j].firstElementChild.addEventListener("click", () => {
+                            this.sound.playClick();
                             this.resetBoard();
                             this.removeRightListener();
                             this.removeLeftListener();
@@ -812,6 +815,7 @@ class Board {
                     }
                     else if (this.boardArr[i][j] === "kingDark") {
                         this.cells[i][j].firstElementChild.addEventListener("click", () => {
+                            this.sound.playClick();
                             this.resetBoard();
                             this.removeRightListener();
                             this.removeLeftListener();

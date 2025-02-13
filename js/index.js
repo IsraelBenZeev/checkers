@@ -7,7 +7,7 @@ drawBord.render();
 drawBord.updaterRedCounter();
 let second = 0;
 let minute = 0;
-const startTimer = ()=> {
+const startTimer = () => {
     this.timerGame = setInterval(() => {
         second++;
         if (second === 60) {
@@ -25,10 +25,39 @@ const home = () => {
 const restart = () => {
     window.location.reload()
 };
-const clearLocalStore = () => {
-    localStorage.clear();
-};
+const newData = new Array(8).fill().map(() => Array(8).fill(null));
+const resetData = () => {
+    for (let i = 0; i < newData.length; i++) {
+        for (let j = 0; j < newData[i].length; j++) {
+            if ((j + i) % 2 == 0) {
+                if (i <= 2) newData[i][j] = "red";
+                else if (i >= 5) newData[i][j] = "dark";
+                else if (i > 2 && i < 5) newData[i][j] = "true"
+            }
+        }
+    }
+}
+resetData();
 
+const clearLocalStore = () => {
+    console.log("מתחיל איפוס משחק");
+    
+    resetData();
+    
+    const usersData = JSON.parse(localStorage.getItem("users")) || [];
+    const currentUser = localStorage.getItem("currentUser");
+    
+    for (let i = 0; i < usersData.length; i++) {
+        if (usersData[i].username === currentUser) {
+            usersData[i].dataGame = newData;
+            console.log("עודכנו נתונים למשתמש:", currentUser, newData);
+        }
+    }
+    localStorage.setItem("users", JSON.stringify(usersData));
+    window.location.reload();
+    // drawBord.render(); 
+
+};
 
 const hamburger = document.querySelector(".hamburger");
 const close = document.querySelector(".close");
@@ -49,4 +78,4 @@ close.addEventListener("click", () => {
 // const pawnsDed = document.querySelector(".pawns-ded");
 // pawnsDed.innerHTML = "סך הכל חיילים אדומים: <br>"+drawBord.counterRedPawn;
 const name = document.querySelector(".name");
-name.textContent = "user name:" + localStorage.getItem("username");
+name.textContent = "user name:" + localStorage.getItem("currentUser");

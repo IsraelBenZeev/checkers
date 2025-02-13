@@ -2,9 +2,15 @@
     box-sizing: border-box;
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
 body {
     background-color: silver;
-    min-height: 94vh;
+    /* min-height: 94vh; */
     width: 96vw;
     flex-direction: column;
     background-color: #be2b2b27;
@@ -47,11 +53,11 @@ body {
 }
 
 .close {
-    font-size: 60px;
+    font-size: 40px;
     width: 100px;
     position: absolute;
     top: 80px;
-    right: 85px;
+    right: 25px;
 }
 .logo2 {
     width: 140px;
@@ -59,11 +65,13 @@ body {
 
 .buttons2 {
     background-color: rgba(66, 70, 73, 0.657);
+    /* border: 3px solid red; */
     position: absolute;
     top: 0px;
     right: -17px;
-    width: 320px;
-    height: 793px;
+    width: 200px;
+    height: 100vh;
+    
     z-index: 200;
     padding: 5px;
     display: none;

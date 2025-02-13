@@ -6,19 +6,43 @@ const login = document.querySelector(".log-in");
 const signUp = document.querySelector(".sign-up");
 const btn_enter = document.querySelector(".enter");
 const back = document.querySelector(".back");
+const guest = document.querySelector(".guest");
+let isGuest = false;
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let dataGame = new Array(8).fill(null).map(() => new Array(8).fill(null));
+const enterData = () => {
+    for (let i = 0; i < dataGame.length; i++) {
+        for (let j = 0; j < dataGame[i].length; j++) {
+            if ((j + i) % 2 == 0) {
+                if (i <= 2) dataGame[i][j] = "red";
+                else if (i >= 5) dataGame[i][j] = "dark";
+                else if (i > 2 && i < 5) dataGame[i][j] = "true"
+            }
+        }
+    }
+}
+enterData();
+console.log("data Game: " +dataGame);
 
-let loginPage = false;
+let isSignup = null;
+
+let loginPage = true;
 btn_enter.addEventListener("click", () => {
-    loginPage = true;
-    signUp.classList.add("hide");
-    login.classList.remove("hide")
-});
-back.addEventListener("click", () => {
+    loginPage = false;
     login.classList.add("hide");
     signUp.classList.remove("hide")
-    loginPage = false;
+});
+back.addEventListener("click", () => {
+    signUp.classList.add("hide");
+    login.classList.remove("hide")
+    loginPage = true;
 })
 
+guest.addEventListener("click", ()=>{
+    isGuest = true;
+    localStorage.setItem("currentUser", "guest")
+    window.location.href = "index2.html";
+})
 
 
 const updetVal = () => {
@@ -33,24 +57,44 @@ const updetVal = () => {
     }
 };
 
-const submit = (e) => {
+const submit1 = (e) => {
     e.preventDefault(); // מונע את רענון הדף
-    if (!loginPage && checkName() && checkMail()) {
-        window.location.href = "index2.html";
-        updatLocalStor();
+    if (checkName() && checkMail()) {
+        console.log("submit1");
+
+        addUserToLocalStor();
+        setTimeout(() => {
+            localStorage.setItem("currentUser", name_val);
+            window.location.href = "index2.html";
+        }, 500);
+
     }
-    else if (loginPage && checkAll()) {
-        window.location.href = "index.html";
+};
+
+const submit2 = (e) => {
+    e.preventDefault(); // מונע את רענון הדף
+    if (checkAll()) {
+        console.log("submit 2");
+        setTimeout(() => {
+            localStorage.setItem("currentUser", name_val);
+            window.location.href = "index2.html";
+
+        }, 500);
     }
 };
 const form = document.querySelectorAll("form");
-form[0].addEventListener("submit", submit);
-form[1].addEventListener("submit", submit);
+form[0].addEventListener("submit", submit1);
+form[1].addEventListener("submit", submit2);
 
-const updatLocalStor = () => {
-    localStorage.setItem("username", name_val);
-    localStorage.setItem("mail", mail_val);
-    localStorage.setItem("password", password_val);
+const addUserToLocalStor = () => {
+    console.log("addUserToLocalStor");
+
+    const user = new User(name_val, mail_val, password_val, dataGame)
+    users.push(user);
+    localStorage.setItem("users", JSON.stringify(users));
+    // localStorage.setItem("username", name_val);
+    // localStorage.setItem("mail", mail_val);
+    // localStorage.setItem("password", password_val);
 
 }
 
@@ -132,21 +176,36 @@ const error_name2 = document.querySelector("#error_name2")
 const errorPassword2 = document.querySelector("#error_password2")
 const checkAll = () => {
     updetVal();
-    if (localStorage.getItem("username") === name_val &&
-        localStorage.getItem("password") === password_val) {
-        return true;
-    }
-    else {
-        if (localStorage.getItem("username") !== name_val) {
-            error_name2.textContent = "The username you entered does not motch"
+    const usersFromLocalStor = JSON.parse(localStorage.getItem("users")) || [];
+    const isUserExsist = usersFromLocalStor.some(item =>
+        name_val === item.username && password_val === item.password
+    );
+    error_name2.textContent = "";
+    errorPassword2.textContent = "";
+    if (!isUserExsist) {
+        if (!usersFromLocalStor.some(item => name_val === item.username)) {
+            error_name2.textContent = "The username you entered does not match";
         }
-        else error_name2.textContent = "";
-        if (localStorage.getItem("password") !== password_val) {
-            errorPassword2.textContent = "The password you entered does not motch"
+        if (!usersFromLocalStor.some(item => password_val === item.password)) {
+            errorPassword2.textContent = "The password you entered does not match"
         }
-        else errorPassword2.textContent = "";
     }
-    return false;
+    return isUserExsist;
+    // if (localStorage.getItem("username") === name_val &&
+    //     localStorage.getItem("password") === password_val) {
+    //     return true;
+    // }
+    // else {
+    //     if (localStorage.getItem("username") !== name_val) {
+    //         error_name2.textContent = "The username you entered does not motch"
+    //     }
+    //     else error_name2.textContent = "";
+    //     if (localStorage.getItem("password") !== password_val) {
+    //         errorPassword2.textContent = "The password you entered does not motch"
+    //     }
+    //     else errorPassword2.textContent = "";
+    // }
+    // return false;
 }
 
 
