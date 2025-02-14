@@ -20,7 +20,7 @@ const startTimer = () => {
 }
 startTimer();
 const home = () => {
-    window.location.href = "landing page.html"
+    window.location.href = "index.html"
 };
 const restart = () => {
     window.location.reload()

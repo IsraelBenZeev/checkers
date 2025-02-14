@@ -1,4 +1,5 @@
 const COLOR_BOARD_DARK = "rgb(41, 88, 108)";
+const COLOR_MOVE = "rgb(10, 163, 229)";
 // import Sound from "./soundClass";
 
 async function loadSound() {
@@ -36,6 +37,8 @@ class Board {
         this.indexUser = this.returnIndexOfCurrentUser();
         this.sound = null; // במקום ליצור את האובייקט, נאתחל אותו כ-null
         this.initSound(); // נקרא לפונקציה שתיצור את האובייקט
+        this.direction = null;
+        this.move = null;
     }
 
     async initSound() {
@@ -70,7 +73,7 @@ class Board {
         const usersData = JSON.parse(localStorage.getItem("users")) || [];
         const currentUser = localStorage.getItem("currentUser");
         for (let i = 0; i < usersData.length; i++) {
-            if (usersData[i].username === currentUser) { 
+            if (usersData[i].username === currentUser) {
                 return i;
             }
         }
@@ -162,19 +165,7 @@ class Board {
         return false;
     }
 
-    removeLeftEatListener(_i, _j) {
-        if (this.handlerLeftEat) {
-            this.cells[_i][_j].removeEventListener("click", this.handlerLeftEat);
-            this.handlerLeftEat = null;
-        }
-    }
 
-    removeRightEatListener(_i, _j) {
-        if (this.handlerRightEat) {
-            this.cells[_i][_j].removeEventListener("click", this.handlerRightEat);
-            this.handlerRightEat = null;
-        }
-    }
 
 
     listenerLeftEat(_i, _j) {
@@ -193,8 +184,9 @@ class Board {
             this.cells[_i + 2][_j + 2].innerHTML = "";
             this.counterRedPawn--;
             this.updaterRedCounter();
+            this.closeAllListiner();
 
-            this.removeLeftEatListener(_i, _j); // הוספת שורה זו
+            // this.removeLeftEatListener(_i, _j); // הוספת שורה זו
             this.render();
             this.resetLine(_i);
             this.resetLine(_i + 1);
@@ -209,14 +201,10 @@ class Board {
 
     listenerLeftEatDown(_i, _j) {
         return () => {
-            // if (_i === 0) {
             this.boardArr[_i][_j] = "kingDark";
             console.log("המלך הגיע!!!!!!!!!!!!!");
             console.log("boardarr: " + this.boardArr);
-            // }
-            // else {
-            //     this.boardArr[_i][_j] = "dark";
-            // }
+
             this.boardArr[_i - 1][_j + 1] = "true";
             this.boardArr[_i - 2][_j + 2] = "true";
             this.cells[_i - 1][_j + 1].innerHTML = "";
@@ -224,7 +212,9 @@ class Board {
             this.counterRedPawn--;
             this.updaterRedCounter();
 
-            this.removeLeftEatListener(_i, _j); // הוספת שורה זו
+            this.closeAllListiner();
+
+            // this.removeLeftEatListener(_i, _j); 
             this.render();
             this.resetLine(_i);
             this.resetLine(_i + 1);
@@ -258,7 +248,9 @@ class Board {
             this.counterRedPawn--;
             this.updaterRedCounter();
 
-            this.removeRightEatListener(_i, _j); // הוספת שורה זו
+            this.closeAllListiner();
+
+            // this.removeRightEatListener(_i, _j); // הוספת שורה זו
             this.render();
             this.resetLine(_i);
             this.resetLine(_i + 1);
@@ -292,8 +284,9 @@ class Board {
 
             this.counterRedPawn--;
             this.updaterRedCounter();
+            this.closeAllListiner();
 
-            this.removeRightEatListener(_i, _j); // הוספת שורה זו
+            // this.removeRightEatListener(_i, _j); // הוספת שורה זו
             this.render();
             this.resetLine(_i);
             this.resetLine(_i - 1);
@@ -358,6 +351,7 @@ class Board {
         this.boardArr[_fromI][_fromJ] = "true";
         this.cells[_fromI][_fromJ].innerHTML = "";
 
+
         this.render();
         this.resetLine(_toI);
 
@@ -368,60 +362,161 @@ class Board {
     }
 
     drawCelForMove(_i, _j) {
-        if (this.boardArr[_i][_j] == "true") {
-            this.cells[_i][_j].style.backgroundColor = "rgb(0, 127, 197)";
+        console.log("direction:" + this.direction);
+        switch (this.direction) {
+            
+            case "lr":
+                this.cells[_i-1][_j-1].style.backgroundColor = COLOR_MOVE;
+                this.cells[_i-1][_j+1].style.backgroundColor = COLOR_MOVE;
+                break;
+            case "l":
+                this.cells[_i-1][_j-1].style.backgroundColor = COLOR_MOVE;
+                break;
+            case "r":
+                this.cells[_i-1][_j+1].style.backgroundColor = COLOR_MOVE;
+                break;
+            case "l_eat":
+                this.cells[_i-2][_j-2].style.backgroundColor = COLOR_MOVE;
+                break;
+            case "r_eat":
+                this.cells[_i-2][_j+2].style.backgroundColor = COLOR_MOVE;
+                break;
         }
+
+        // if (this.boardArr[_i][_j] == "true") {
+        //     this.cells[_i][_j].style.backgroundColor = "rgb(0, 127, 197)";
+        // }
     }
 
     collision(_i, _j) {
         if (this.boardArr[_i][_j] === "true") return true;
         return false;
     }
+    op
+
+
+    closeAllListiner() {
+        // ניקוי המאזינים של תזוזה רגילה
+        if (this.handlerLeft) {
+            this.cells[this.indexesLisLeft[0]][this.indexesLisLeft[1]].removeEventListener("click", this.handlerLeft);
+            this.handlerLeft = null;
+        }
+        if (this.handlerRight) {
+            this.cells[this.indexesLisRight[0]][this.indexesLisRight[1]].removeEventListener("click", this.handlerRight);
+            this.handlerRight = null;
+        }
+
+        // ניקוי המאזינים של אכילה
+        for (let i = 0; i < this.cells.length; i++) {
+            for (let j = 0; j < this.cells[i].length; j++) {
+                if (this.handlerLeftEat) {
+                    console.log("clear eat left");
+                    this.cells[i][j].removeEventListener("click", this.handlerLeftEat);
+                }
+                if (this.handlerRightEat) {
+                    console.log("clear eat right");
+                    this.cells[i][j].removeEventListener("click", this.handlerRightEat);
+                }
+            }
+        }
+        this.handlerLeftEat = null;
+        this.handlerRightEat = null;
+        this.indexesLisLeft = [null, null];
+        this.indexesLisRight = [null, null];
+    }
 
     MoveUp(_fromI, _fromJ) {
         if (_fromI !== 0) {
+            // אכילות
             if (this.checkEatOpponentLeft(_fromI - 1, _fromJ - 1)) {
                 console.log("eat in left");
-                this.drawCelForMove(_fromI - 2, _fromJ - 2);
+                this.direction = "l_eat";
+                this.drawCelForMove(_fromI, _fromJ);
                 this.handlerLeftEat = this.listenerLeftEat(_fromI - 2, _fromJ - 2);
                 this.cells[_fromI - 2][_fromJ - 2].addEventListener("click", this.handlerLeftEat);
                 return;
-
+                
             }
             if (this.checkEatOpponentRight(_fromI - 1, _fromJ + 1)) {
                 console.log("eat in right");
-                this.drawCelForMove(_fromI - 2, _fromJ + 2);
+                this.direction = "r_eat";
+                this.drawCelForMove(_fromI, _fromJ);
                 this.handlerRightEat = this.listenerRightEat(_fromI - 2, _fromJ + 2);
                 this.cells[_fromI - 2][_fromJ + 2].addEventListener("click", this.handlerRightEat);
             }
-            if (_fromJ === this.cells.length - 1) {
-                this.drawCelForMove(_fromI - 1, _fromJ - 1);
-            }
-            else if (_fromJ === 0) {
-                this.drawCelForMove(_fromI - 1, _fromJ + 1);
-            }
-            else if (_fromJ !== 0 && _fromJ !== this.cells.length - 1) {
-                this.drawCelForMove(_fromI - 1, _fromJ - 1);
-                this.drawCelForMove(_fromI - 1, _fromJ + 1);
-            }
+            // תנועה רגילה
             if (this.collision(_fromI - 1, _fromJ - 1) && this.collision(_fromI - 1, _fromJ + 1)) {
                 console.log("rl");
+                this.direction = "lr";
+                this.drawCelForMove(_fromI, _fromJ);
                 this.rightListener(_fromI, _fromJ, _fromI - 1, _fromJ + 1)
                 this.leftListener(_fromI, _fromJ, _fromI - 1, _fromJ - 1);
-
             }
-
             else if (this.collision(_fromI - 1, _fromJ - 1)) {
                 console.log("L");
+                this.direction = "l";
+                this.drawCelForMove(_fromI, _fromJ);
                 this.leftListener(_fromI, _fromJ, _fromI - 1, _fromJ - 1);
             }
             else if (this.collision(_fromI - 1, _fromJ + 1)) {
                 console.log("r");
+                this.direction = "r";
+                this.drawCelForMove(_fromI, _fromJ);
                 this.rightListener(_fromI, _fromJ, _fromI - 1, _fromJ + 1);
             }
         }
 
     }
+
+
+    moveKing(_i, _j) {
+
+        if (this.checkEatOpponentLeftDwon(_i + 1, _j - 1)) {
+            console.log("king eat L");
+            this.drawCelForMove(_i + 2, _j - 2);
+            this.handlerLeftEat = this.listenerLeftEatDown(_i + 2, _j - 2);
+            this.cells[_i + 2][_j - 2].addEventListener("click", this.handlerLeftEat);
+            this.closeAllListiner();
+            return;
+        }
+        if (this.checkEatOpponentRightDown(_i + 1, _j + 1)) {
+            console.log("king eat R");
+            this.drawCelForMove(_i + 2, _j + 2);
+            this.handlerLeftEat = this.listenerRightEatDown(_i + 2, _j + 2);
+            this.cells[_i + 2][_j + 2].addEventListener("click", this.handlerLeftEat);
+            this.closeAllListiner();
+            return;
+        }
+        if (this.collision(_i + 1, _j - 1) && this.collision(_i + 1, _j + 1)) {
+            console.log("king RL");
+            this.leftListener(_i, _j, _i + 1, _j - 1);
+            this.rightListener(_i, _j, _i + 1, _j + 1);
+
+        }
+        else if (this.collision(_i + 1, _j - 1)) {
+            console.log("king L");
+            this.leftListener(_i, _j, _i + 1, _j - 1);
+        }
+        else if (this.collision(_i + 1, _j + 1)) {
+            console.log("king R");
+            this.rightListener(_i, _j, _i + 1, _j + 1);
+        }
+        if (_j === this.cells.length - 1) {
+            this.drawCelForMove(_i + 1, _j - 1);
+        }
+        else if (_j === 0) {
+            this.drawCelForMove(_i + 1, _j + 1);
+        }
+        else if (_j !== 0 && _j !== this.cells.length - 1) {
+            this.drawCelForMove(_i + 1, _j - 1);
+            this.drawCelForMove(_i + 1, _j + 1);
+        }
+    }
+
+    isKingRed(_i, _j) {
+        return this.boardArr[_i][_j] === "kingRed";
+    }
+
     isRedCanEatLeft(_i, _j) {
         if (_i + 2 < this.cells.length && _j - 2 >= 0) {
             if (this.boardArr[_i + 1][_j - 1] === "dark" || this.isKingDark(_i + 1, _j - 1)) {
@@ -459,55 +554,6 @@ class Board {
         return false;
     }
 
-    moveKing(_i, _j) {
-
-        if (this.checkEatOpponentLeftDwon(_i + 1, _j - 1)) {
-            console.log("king eat L");
-            this.drawCelForMove(_i + 2, _j - 2);
-            this.handlerLeftEat = this.listenerLeftEatDown(_i + 2, _j - 2);
-            this.cells[_i + 2][_j - 2].addEventListener("click", this.handlerLeftEat);
-            return;
-        }
-        if (this.checkEatOpponentRightDown(_i + 1, _j + 1)) {
-            console.log("king eat R");
-            this.drawCelForMove(_i + 2, _j + 2);
-            this.handlerLeftEat = this.listenerRightEatDown(_i + 2, _j + 2);
-            this.cells[_i + 2][_j + 2].addEventListener("click", this.handlerLeftEat);
-            return;
-        }
-        if (this.collision(_i + 1, _j - 1) && this.collision(_i + 1, _j + 1)) {
-            console.log("king RL");
-            this.leftListener(_i, _j, _i + 1, _j - 1);
-            this.rightListener(_i, _j, _i + 1, _j + 1);
-
-        }
-        else if (this.collision(_i + 1, _j - 1)) {
-            console.log("king L");
-            this.leftListener(_i, _j, _i + 1, _j - 1);
-        }
-        else if (this.collision(_i + 1, _j + 1)) {
-            console.log("king R");
-            this.rightListener(_i, _j, _i + 1, _j + 1);
-        }
-        if (_j === this.cells.length - 1) {
-            this.drawCelForMove(_i + 1, _j - 1);
-        }
-        else if (_j === 0) {
-            this.drawCelForMove(_i + 1, _j + 1);
-        }
-        else if (_j !== 0 && _j !== this.cells.length - 1) {
-            this.drawCelForMove(_i + 1, _j - 1);
-            this.drawCelForMove(_i + 1, _j + 1);
-        }
-    }
-
-    lightToKing(_i, _j) {
-        if (_i === this.boardArr.length - 1) this.boardArr[_i][_j] = "kingLight";
-    }
-
-    isKingRed(_i, _j) {
-        return this.boardArr[_i][_j] === "kingRed";
-    }
     moveDown() {
         let arrRed = [];
         for (let i = 0; i < this.boardArr.length; i++) {
@@ -758,10 +804,10 @@ class Board {
 
 
     render() {
-       const users = JSON.parse(localStorage.getItem("users"));
-       users[this.indexUser].dataGame = this.boardArr;
-       localStorage.setItem("users", JSON.stringify(users));
-    
+        const users = JSON.parse(localStorage.getItem("users"));
+        users[this.indexUser].dataGame = this.boardArr;
+        localStorage.setItem("users", JSON.stringify(users));
+
 
 
         for (let i = 0; i < this.row; i++) {
@@ -831,3 +877,19 @@ class Board {
         }
     }
 }
+
+
+
+// removeLeftEatListener(_i, _j) {
+//     if (this.handlerLeftEat) {
+//         this.cells[_i][_j].removeEventListener("click", this.handlerLeftEat);
+//         this.handlerLeftEat = null;
+//     }
+// }
+
+// removeRightEatListener(_i, _j) {
+//     if (this.handlerRightEat) {
+//         this.cells[_i][_j].removeEventListener("click", this.handlerRightEat);
+//         this.handlerRightEat = null;
+//     }
+// }

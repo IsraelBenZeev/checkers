@@ -89,14 +89,10 @@ body {
     padding: 12px 24px;
     background-color: transparent;
     cursor: pointer;
-    color: var(--primary);
-    border-top: 3px solid var(--primary);
-    border-bottom: 3px solid var(--primary);
-    border-left: 3px solid rgba(183, 185, 187, 0.798);
-    border-right: 3px solid rgba(183, 185, 187, 0.798);
+    background-color: var(--primary);
     transition: color 0.4s ease-in-out;
     z-index: 1;
-    background-color: rgba(183, 185, 187, 0.798);
+    color: rgba(183, 185, 187, 0.798);
     border-radius: 2px;
     padding: 0;
 }

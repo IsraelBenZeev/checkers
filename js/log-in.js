@@ -41,7 +41,7 @@ back.addEventListener("click", () => {
 guest.addEventListener("click", ()=>{
     isGuest = true;
     localStorage.setItem("currentUser", "guest")
-    window.location.href = "index2.html";
+    window.location.href = "game.html";
 })
 
 
@@ -65,7 +65,7 @@ const submit1 = (e) => {
         addUserToLocalStor();
         setTimeout(() => {
             localStorage.setItem("currentUser", name_val);
-            window.location.href = "index2.html";
+            window.location.href = "game.html";
         }, 500);
 
     }
@@ -77,7 +77,7 @@ const submit2 = (e) => {
         console.log("submit 2");
         setTimeout(() => {
             localStorage.setItem("currentUser", name_val);
-            window.location.href = "index2.html";
+            window.location.href = "game.html";
 
         }, 500);
     }

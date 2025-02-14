@@ -11,7 +11,7 @@ html, body {
 body {
     background-color: silver;
     /* min-height: 94vh; */
-    width: 96vw;
+    width: 100%;
     flex-direction: column;
     background-color: #be2b2b27;
     position: relative;
@@ -49,7 +49,7 @@ body {
     width: 40px;
     position: absolute;
     top: 20px;
-    right: 5px;
+    right: 20px;
 }
 
 .close {
@@ -229,6 +229,7 @@ body {
     }
 
     .container {
+        margin: 0;
         /* background-color: aqua; */
         grid-template-areas:
             "title title"
