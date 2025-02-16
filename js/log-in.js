@@ -8,6 +8,7 @@ const btn_enter = document.querySelector(".enter");
 const back = document.querySelector(".back");
 const guest = document.querySelector(".guest");
 let isGuest = false;
+const pawnDied = [12, 12];
 let users = JSON.parse(localStorage.getItem("users")) || [];
 let dataGame = new Array(8).fill(null).map(() => new Array(8).fill(null));
 const enterData = () => {
@@ -22,7 +23,8 @@ const enterData = () => {
     }
 }
 enterData();
-console.log("data Game: " +dataGame);
+
+console.log("data Game: " + dataGame);
 
 let isSignup = null;
 
@@ -38,7 +40,7 @@ back.addEventListener("click", () => {
     loginPage = true;
 })
 
-guest.addEventListener("click", ()=>{
+guest.addEventListener("click", () => {
     isGuest = true;
     localStorage.setItem("currentUser", "guest")
     window.location.href = "game.html";
@@ -59,9 +61,8 @@ const updetVal = () => {
 
 const submit1 = (e) => {
     e.preventDefault(); // מונע את רענון הדף
+    console.log("submit1");
     if (checkName() && checkMail()) {
-        console.log("submit1");
-
         addUserToLocalStor();
         setTimeout(() => {
             localStorage.setItem("currentUser", name_val);
@@ -73,8 +74,8 @@ const submit1 = (e) => {
 
 const submit2 = (e) => {
     e.preventDefault(); // מונע את רענון הדף
+    console.log("submit 2");
     if (checkAll()) {
-        console.log("submit 2");
         setTimeout(() => {
             localStorage.setItem("currentUser", name_val);
             window.location.href = "game.html";
@@ -88,18 +89,23 @@ form[1].addEventListener("submit", submit2);
 
 const addUserToLocalStor = () => {
     console.log("addUserToLocalStor");
-
-    const user = new User(name_val, mail_val, password_val, dataGame)
+    const user = new User(name_val, mail_val, password_val, dataGame, pawnDied)
     users.push(user);
     localStorage.setItem("users", JSON.stringify(users));
-    // localStorage.setItem("username", name_val);
-    // localStorage.setItem("mail", mail_val);
-    // localStorage.setItem("password", password_val);
-
 }
 
+
+const checkUserNames = (_name) => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    return users.some(item => item.username === _name);
+}
 const checkName = () => {
     updetVal();
+    if (checkUserNames(name_val)) {
+        console.log("השם קיים כבר");
+        document.querySelector("#error_name").textContent = "The name entered is exist"
+        return false;
+    }
     if (name_val.length < 2 || name_val.length == 0) {
         console.log("name too short");
         document.querySelector("#error_name").textContent = "The name entered is too short"
@@ -207,6 +213,3 @@ const checkAll = () => {
     // }
     // return false;
 }
-
-
-

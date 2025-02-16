@@ -5,10 +5,12 @@ drawBord.fillArr();
 drawBord.drawBoard();
 drawBord.render();
 drawBord.updaterRedCounter();
+drawBord.updaterDarkCounter();
+
 let second = 0;
 let minute = 0;
 const startTimer = () => {
-    this.timerGame = setInterval(() => {
+    const timerGame = setInterval(() => {
         second++;
         if (second === 60) {
             second = 0;
@@ -38,6 +40,8 @@ const resetData = () => {
     }
 }
 resetData();
+
+
 
 const clearLocalStore = () => {
     console.log("מתחיל איפוס משחק");
