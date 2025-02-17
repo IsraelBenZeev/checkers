@@ -39,21 +39,19 @@ const resetData = () => {
         }
     }
 }
-resetData();
 
 
 
 const clearLocalStore = () => {
     console.log("מתחיל איפוס משחק");
-    
     resetData();
-    
     const usersData = JSON.parse(localStorage.getItem("users")) || [];
     const currentUser = localStorage.getItem("currentUser");
-    
     for (let i = 0; i < usersData.length; i++) {
         if (usersData[i].username === currentUser) {
             usersData[i].dataGame = newData;
+            usersData[i].pawnDied[0] = 12;
+            usersData[i].pawnDied[1] = 12;
             console.log("עודכנו נתונים למשתמש:", currentUser, newData);
         }
     }

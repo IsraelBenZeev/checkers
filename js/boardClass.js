@@ -47,9 +47,17 @@ class Board {
     async initSound() {
         try {
             const SoundModule = await import('./soundClass.js');
-            this.sound = new SoundModule.default("./files/sounds/click.wav");
+            this.sound = new SoundModule.default("./files/sounds/click.wav", "./files/sounds/eat.mp3", "./files/sounds/move2.mp3", "./files/sounds/king.wav");
         } catch (error) {
             console.error("Could not load sound module:", error);
+        }
+    }
+
+    victory(){
+        if(this.counterRedPawn === 0){
+            console.log("you won!!!!!!!!!!");
+            
+            window.location.href="./victory.html";
         }
     }
 
@@ -237,6 +245,7 @@ class Board {
     }
     moveEat(_fromI, _fromJ, _toI, _toJ, _diedI, _diedJ) {
         console.log("enter to move eat");
+        this.sound.playEting();
         const wasKing = this.isKingDark(_fromI, _fromJ);
         if (_toI === 0 || wasKing) {
             this.boardArr[_toI][_toJ] = "kingDark";
@@ -250,10 +259,7 @@ class Board {
         this.cells[_diedI][_diedJ].innerHTML = "";
 
         this.counterRedPawn--;
-        if(this.counterRedPawn === 0){
-            console.log("ניצחת!!!!!!");
-            
-        }
+        this.victory();
 
         this.updaterRedCounter();
         this.removeLeftListenerEat();
@@ -326,17 +332,26 @@ class Board {
 
     movePawn(_fromI, _fromJ, _toI, _toJ) {
         console.log("entered move pawn");
+        this.sound.stopAll();
         if (_toI !== 0) {
             if (this.isKingDark(_fromI, _fromJ)) {
                 this.boardArr[_toI][_toJ] = "kingDark";
+                // this.sound.stopMove();
+                this.sound.playMove();
             }
             else if (!this.isKingDark(_fromI, _fromJ)) {
                 this.boardArr[_toI][_toJ] = "dark";
+                // this.sound.stopMove();
+                this.sound.playMove();
             }
         }
         else if (_toI === 0) {
             this.boardArr[_toI][_toJ] = "kingDark";
+            this.sound.stopMove();
+
+            this.sound.playKing();
         }
+        
         this.boardArr[_fromI][_fromJ] = "true";
         this.cells[_fromI][_fromJ].innerHTML = "";
         this.removeRightListener();
@@ -574,6 +589,7 @@ class Board {
     }
 
     moveDown() {
+        this.sound.stopMove();
         let arrRed = [];
         for (let i = 0; i < this.boardArr.length; i++) {
             for (let j = 0; j < this.boardArr[i].length; j++) {
@@ -591,22 +607,22 @@ class Board {
                 const toJ = fromJ - 2;
 
                 setTimeout(() => {
-                    // קודם נציב את החייל האדום במיקום החדש
                     if (this.isKingRed(fromI, fromJ) || toI === this.boardArr.length - 1) {
+                        this.sound.king();
                         this.boardArr[toI][toJ] = "kingRed";
                     } else {
                         this.boardArr[toI][toJ] = "red";
                     }
-
-                    // רק אז נמחק את המיקום הישן ואת החייל שנאכל
+                    
                     this.boardArr[fromI][fromJ] = "true";
                     this.boardArr[fromI + 1][fromJ - 1] = "true";
                     this.cells[fromI][fromJ].innerHTML = "";
                     this.cells[fromI + 1][fromJ - 1].innerHTML = "";
-
+                    
                     this.counterDarkPawn--;
                     this.updaterDarkCounter();
                     this.render();
+                    this.sound.playEting();
                     this.myTimer = 1;
                 }, this.computerDelay);
 
@@ -619,14 +635,13 @@ class Board {
                 const toJ = fromJ + 2;
 
                 setTimeout(() => {
-                    // קודם נציב את החייל האדום במיקום החדש
                     if (this.isKingRed(fromI, fromJ) || toI === this.boardArr.length - 1) {
                         this.boardArr[toI][toJ] = "kingRed";
                     } else {
                         this.boardArr[toI][toJ] = "red";
                     }
+                    this.sound.playEting();
 
-                    // רק אז נמחק את המיקום הישן ואת החייל שנאכל
                     this.boardArr[fromI][fromJ] = "true";
                     this.boardArr[fromI + 1][fromJ + 1] = "true";
                     this.cells[fromI][fromJ].innerHTML = "";
@@ -652,7 +667,6 @@ class Board {
             }
         }
 
-        // בדיקה שיש תזוזות אפשריות
         if (arrMoveREd.length === 0) {
             console.log("אין לאן לזוז");
             this.myTimer = 1;
@@ -672,8 +686,11 @@ class Board {
                     this.boardArr[fromI + 1][fromJ - 1] = "kingRed";
                 } else {
                     this.boardArr[fromI + 1][fromJ - 1] = "red";
+                    this.sound.stopAll();
+                    this.sound.playMove();
                 }
                 this.render();
+                
                 this.myTimer = 1;
             }, this.computerDelay);
             return;
