@@ -52,20 +52,55 @@ class Board {
             console.error("Could not load sound module:", error);
         }
     }
-
-    victory(){
-        if(this.counterRedPawn === 0){
-            console.log("you won!!!!!!!!!!");
-            
-            window.location.href="./victory.html";
+    resetBoardArr() {
+        for (let i = 0; i < this.boardArr.length; i++) {
+            for (let j = 0; j < this.boardArr[i].length; j++) {
+                if ((j + i) % 2 == 0) {
+                    if (i <= 2) this.boardArr[i][j] = "red";
+                    else if (i >= 5) this.boardArr[i][j] = "dark";
+                    else if (i > 2 && i < 5) this.boardArr[i][j] = "true"
+                }
+            }
         }
     }
+    updeteDataGameInLocalStor() {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        if (users[this.indexUser]) {
+            users[this.indexUser].dataGame = this.boardArr;
+        } else {
+            console.error("User not found in localStorage");
+        }
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+    updetePawnDiedInLocalStor() {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        if (users[this.indexUser]) {
+            users[this.indexUser].pawnDied[0] = 12;
+            users[this.indexUser].pawnDied[1] = 12;
+        } else {
+            console.error("User not found in localStorage");
+        }
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+    victory() {
+        if (this.counterRedPawn === 0) {
+            this.resetBoard();
+            this.updeteDataGameInLocalStor();
+            this.updetePawnDiedInLocalStor();
+
+            setTimeout(() => {
+                console.log("you won!!!!!!!!!!");
+                window.location.href = "./victory.html";
+            }, 1500)
+        }
+    }
+
 
     updaterRedCounter() {
         console.log("counterRedPawn after eat: " + this.counterRedPawn);
         const users = JSON.parse(localStorage.getItem("users")) || [];
         users[this.indexUser].pawnDied[1] = this.counterRedPawn;
-        localStorage.setItem("users", JSON.stringify(users)); 
+        localStorage.setItem("users", JSON.stringify(users));
 
         const pawnsDed = document.querySelector(".pawns-red-ded");
         pawnsDed.style.direction = "rtl";
@@ -80,7 +115,7 @@ class Board {
         console.log("counterDarkPawn after eat: " + this.counterDarkPawn);
         const users = JSON.parse(localStorage.getItem("users")) || [];
         users[this.indexUser].pawnDied[0] = this.counterDarkPawn;
-        localStorage.setItem("users", JSON.stringify(users)); 
+        localStorage.setItem("users", JSON.stringify(users));
 
         const pawnsDed = document.querySelector(".pawns-dark-ded");
         pawnsDed.style.direction = "rtl";
@@ -118,7 +153,7 @@ class Board {
         console.log("data:" + usersData[this.indexUser].dataGame);
         this.boardArr = usersData[this.indexUser].dataGame;
     }
- 
+
     drawBoard() {
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
@@ -179,8 +214,7 @@ class Board {
 
     checkEatOpponentLeftForKing(_i, _j) {
         console.log("i:" + _i + ", j: " + _j);
-
-        if (_i < this.cells.length && _j > 1) {
+        if (_i < this.cells.length - 2 && _j > 1) {
             console.log("נכנס לבדיקת שמאל");
             if (this.boardArr[_i + 1][_j - 1] === "red" || this.boardArr[_i + 1][_j - 1] === "kingRed") {
                 if (this.boardArr[_i + 2][_j - 2] === "true") {
@@ -191,9 +225,9 @@ class Board {
         return false;
     }
     checkEatOpponentRightForKing(_i, _j) {
-        if (_i < this.col && _j < this.row) {
+        console.log("i:" + _i + ", j: " + _j);
+        if (_i < this.col - 2 && _j < this.row - 2) {
             console.log("נכנס לבדיקת ימין");
-
             if (this.boardArr[_i + 1][_j + 1] === "red" || this.boardArr[_i + 1][_j + 1] === "kingRed") {
                 if (this.boardArr[_i + 2][_j + 2] === "true") {
                     return true;
@@ -348,10 +382,9 @@ class Board {
         else if (_toI === 0) {
             this.boardArr[_toI][_toJ] = "kingDark";
             this.sound.stopMove();
-
-            this.sound.playKing();
+            if(this.boardArr[_fromI][_fromJ] === "dark") this.sound.playKing();
         }
-        
+
         this.boardArr[_fromI][_fromJ] = "true";
         this.cells[_fromI][_fromJ].innerHTML = "";
         this.removeRightListener();
@@ -479,17 +512,20 @@ class Board {
 
             }
             // תנועות מלך
-            if (this.collision(_fromI + 1, _fromJ - 1)) {
-                console.log("king can move L");
-                this.direction = "l_king"
-                this.drawCelForMove(_fromI, _fromJ);
-                this.listinerLeftKing(_fromI, _fromJ);
-            }
-            if (this.collision(_fromI + 1, _fromJ + 1)) {
-                console.log("king can move R");
-                this.direction = "r_king"
-                this.drawCelForMove(_fromI, _fromJ);
-                this.listinerRightKing(_fromI, _fromJ);
+            if (_fromI !== this.row-1) {
+
+                if (this.collision(_fromI + 1, _fromJ - 1)) {
+                    console.log("king can move L");
+                    this.direction = "l_king"
+                    this.drawCelForMove(_fromI, _fromJ);
+                    this.listinerLeftKing(_fromI, _fromJ);
+                }
+                if (this.collision(_fromI + 1, _fromJ + 1)) {
+                    console.log("king can move R");
+                    this.direction = "r_king"
+                    this.drawCelForMove(_fromI, _fromJ);
+                    this.listinerRightKing(_fromI, _fromJ);
+                }
             }
         }
 
@@ -608,17 +644,19 @@ class Board {
 
                 setTimeout(() => {
                     if (this.isKingRed(fromI, fromJ) || toI === this.boardArr.length - 1) {
-                        this.sound.king();
+
+                        console.log("נהיה מלך");
+
                         this.boardArr[toI][toJ] = "kingRed";
                     } else {
                         this.boardArr[toI][toJ] = "red";
                     }
-                    
+
                     this.boardArr[fromI][fromJ] = "true";
                     this.boardArr[fromI + 1][fromJ - 1] = "true";
                     this.cells[fromI][fromJ].innerHTML = "";
                     this.cells[fromI + 1][fromJ - 1].innerHTML = "";
-                    
+
                     this.counterDarkPawn--;
                     this.updaterDarkCounter();
                     this.render();
@@ -690,7 +728,7 @@ class Board {
                     this.sound.playMove();
                 }
                 this.render();
-                
+
                 this.myTimer = 1;
             }, this.computerDelay);
             return;
@@ -841,20 +879,14 @@ class Board {
 
     render() {
         console.log("reder");
-        const users = JSON.parse(localStorage.getItem("users")) || []; // טען או אתחל כמערך ריק
-        if (users[this.indexUser]) {
-            users[this.indexUser].dataGame = this.boardArr;
-        } else {
-            console.error("User not found in localStorage"); // בדוק שאין שגיאות
-        }
-        localStorage.setItem("users", JSON.stringify(users)); // שמור מחדש בלי מחיקה
-        // const users = JSON.parse(localStorage.getItem("users"));
-        // users[this.indexUser].dataGame = this.boardArr;
-        // localStorage.removeItem("users");
-
-        // localStorage.setItem("users", JSON.stringify(users));
-
-
+        this.updeteDataGameInLocalStor();
+        // const users = JSON.parse(localStorage.getItem("users")) || [];
+        // if (users[this.indexUser]) {
+        //     users[this.indexUser].dataGame = this.boardArr;
+        // } else {
+        //     console.error("User not found in localStorage"); 
+        // }
+        // localStorage.setItem("users", JSON.stringify(users)); 
 
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
