@@ -1,11 +1,11 @@
 const board = document.querySelector(".board");
-const drawBord = new Board(".board", 8, 8);
-drawBord.fillArr();
+const game = new Board(".board", 8, 8);
+// drawBord.fillArr();
 
-drawBord.drawBoard();
-drawBord.render();
-drawBord.updaterRedCounter();
-drawBord.updaterDarkCounter();
+game.drawBoard();
+// drawBord.render();
+// drawBord.updaterRedCounter();
+// drawBord.updaterDarkCounter();
 
 let second = 0;
 let minute = 0;

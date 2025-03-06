@@ -1,0 +1,316 @@
+class Opponent{
+    constructor(_boardArr, _cells, _board){
+        this.boardArr = _boardArr;
+        this.cells = _cells;
+        this.board = _board;
+    }
+    isKingDark(_i, _j) {
+        return this.boardArr[_i][_j] === "kingDark";
+    }
+    isKingRed(_i, _j) {
+        return this.boardArr[_i][_j] === "kingRed";
+    }
+    isRedCanEatLeft(_i, _j) {
+        if (_i + 2 < this.cells.length && _j - 2 >= 0) {
+            if (this.boardArr[_i + 1][_j - 1] === "dark" || this.isKingDark(_i + 1, _j - 1)) {
+                if (this.boardArr[_i + 2][_j - 2] === "true") {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+    isRedCanEatRight(_i, _j) {
+        if (_i + 2 < this.cells.length && _j + 2 < this.cells.length) {
+            if (this.boardArr[_i + 1][_j + 1] === "dark" || this.isKingDark(_i + 1, _j + 1)) {
+                if (this.boardArr[_i + 2][_j + 2] === "true") {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    isRedMoveRight(_i, _j) {
+        if (_i + 1 < this.cells.length && _j + 1 < this.cells.length) {
+            if (this.boardArr[_i + 1][_j + 1] === "true") {
+                return true;
+            }
+        }
+        return false;
+    }
+    isRedMoveLeft(_i, _j) {
+        if (_i < this.cells.length - 1 && _j - 1 < this.cells.length) {
+            if (this.boardArr[_i + 1][_j - 1] === "true") {
+                return true;
+            }
+        }
+        return false;
+    }
+    moveDown(_boardArr, _cells) {
+        this.boardArr = _boardArr;
+        this.cells = _cells;
+        // this.sound.stopMove();
+        let arrRed = [];
+        for (let i = 0; i < this.boardArr.length; i++) {
+            for (let j = 0; j < this.boardArr[i].length; j++) {
+                if (this.boardArr[i][j] === "red" || this.isKingRed(i, j)) {
+                    arrRed.push({ i, j });
+                }
+            }
+        }
+        for (let k = 0; k < arrRed.length; k++) {
+            const currentPawn = arrRed[k];
+            if (this.isRedCanEatLeft(currentPawn.i, currentPawn.j)) {
+                const fromI = currentPawn.i;
+                const fromJ = currentPawn.j;
+                const toI = fromI + 2;
+                const toJ = fromJ - 2;
+
+                setTimeout(() => {
+                    if (this.isKingRed(fromI, fromJ) || toI === this.boardArr.length - 1) {
+
+                        console.log("נהיה מלך");
+
+                        this.boardArr[toI][toJ] = "kingRed";
+                    } else {
+                        this.boardArr[toI][toJ] = "red";
+                    }
+
+                    this.boardArr[fromI][fromJ] = "true";
+                    this.boardArr[fromI + 1][fromJ - 1] = "true";
+                    this.cells[fromI][fromJ].innerHTML = "";
+                    this.cells[fromI + 1][fromJ - 1].innerHTML = "";
+
+                    // this.storage.counterDarkPawn--;
+                    // this.storage.updaterDarkCounter();
+                    this.board.render(this.boardArr, this.cells);
+                    // this.sound.playEting();
+                    // this.myTimer = 1;
+                    
+                }, 1000);
+
+                return;
+            }
+            else if (this.isRedCanEatRight(currentPawn.i, currentPawn.j)) {
+                const fromI = currentPawn.i;
+                const fromJ = currentPawn.j;
+                const toI = fromI + 2;
+                const toJ = fromJ + 2;
+
+                setTimeout(() => {
+                    if (this.isKingRed(fromI, fromJ) || toI === this.boardArr.length - 1) {
+                        this.boardArr[toI][toJ] = "kingRed";
+                    } else {
+                        this.boardArr[toI][toJ] = "red";
+                    }
+                    // this.sound.playEting();
+
+                    this.boardArr[fromI][fromJ] = "true";
+                    this.boardArr[fromI + 1][fromJ + 1] = "true";
+                    this.cells[fromI][fromJ].innerHTML = "";
+                    this.cells[fromI + 1][fromJ + 1].innerHTML = "";
+
+                    // this.storage.counterDarkPawn--;
+                    // this.storage.updaterDarkCounter();
+                    this.board.render(this.boardArr, this.cells);
+                    // this.myTimer = 1;
+                }, 1000);
+                return;
+            }
+        }
+        const kingMoved = this.moveKingRedUp(this.boardArr, this.cells);
+        if (kingMoved) {
+            return;
+        }
+
+        let arrMoveREd = [];
+        for (let i = 0; i < arrRed.length; i++) {
+            if (this.isRedMoveLeft(arrRed[i].i, arrRed[i].j) || this.isRedMoveRight(arrRed[i].i, arrRed[i].j)) {
+                arrMoveREd.push({ i: arrRed[i].i, j: arrRed[i].j });
+            }
+        }
+
+        if (arrMoveREd.length === 0) {
+            console.log("אין לאן לזוז");
+            // this.myTimer = 1;
+            this.board.turnsManagement.turn = "you";
+            return;
+        }
+
+        let random = Math.floor(Math.random() * arrMoveREd.length);
+        let pawnCurrent = arrMoveREd[random];
+
+        if (this.isRedMoveLeft(pawnCurrent.i, pawnCurrent.j)) {
+            const fromI = pawnCurrent.i;
+            const fromJ = pawnCurrent.j;
+            setTimeout(() => {
+                this.cells[fromI][fromJ].innerHTML = "";
+                this.boardArr[fromI][fromJ] = "true";
+                if (this.isKingRed(fromI, fromJ) || fromI + 1 === this.boardArr.length - 1) {
+                    this.boardArr[fromI + 1][fromJ - 1] = "kingRed";
+                } else {
+                    this.boardArr[fromI + 1][fromJ - 1] = "red";
+                    // this.sound.stopAll();
+                    // this.sound.playMove();
+                }
+                this.board.render(this.boardArr, this.cells);
+
+                // this.myTimer = 1;
+                this.board.turnsManagement.turn = "you";
+            }, 1000);
+            return;
+        }
+
+
+        else if (this.isRedMoveRight(pawnCurrent.i, pawnCurrent.j)) {
+            const fromI = pawnCurrent.i;
+            const fromJ = pawnCurrent.j;
+            setTimeout(() => {
+                this.cells[fromI][fromJ].innerHTML = "";
+                this.boardArr[fromI][fromJ] = "true";
+                if (this.isKingRed(fromI, fromJ) || fromI + 1 === this.boardArr.length - 1) {
+                    this.boardArr[fromI + 1][fromJ + 1] = "kingRed";
+                } else {
+                    this.boardArr[fromI + 1][fromJ + 1] = "red";
+                }
+                this.board.render(this.boardArr, this.cells);
+                // this.myTimer = 1;
+                this.board.turnsManagement.turn = "you";
+            }, 1000);
+            return;
+        }
+
+    }
+
+    moveKingRedUp(_boardArr, _cells) {
+        this.boardArr = _boardArr;
+        this.cells = _cells;
+        let kingsCanMove = [];
+        for (let i = 0; i < this.boardArr.length; i++) {
+            for (let j = 0; j < this.boardArr.length; j++) {
+                if (this.isKingRed(i, j)) {
+                    if (this.isKingCanEatLeftUp(i, j) || this.isKingCanEatRightUp(i, j) || this.isKingRedMoveLeftUp(i, j) || this.isKingRedMoveRightUp(i, j)) {
+                        kingsCanMove.push({ i, j });
+                    }
+                }
+            }
+        }
+        let randomKing = Math.floor(Math.random() * kingsCanMove.length);
+        let kingCurrent = kingsCanMove[randomKing];
+        let existKings = kingsCanMove.length > 0;  // התיקון כאן
+
+        if (existKings && this.isKingCanEatLeftUp(kingCurrent.i, kingCurrent.j)) {
+            console.log("יש אכילה בשמאל");
+
+            const fromI = kingCurrent.i;
+            const fromJ = kingCurrent.j;
+            setTimeout(() => {
+                this.cells[fromI][fromJ].innerHTML = "";
+                this.boardArr[fromI][fromJ] = "true";
+                this.boardArr[fromI - 1][fromJ - 1] = "true";
+                this.cells[fromI - 1][fromJ - 1].innerHTML = "";
+                this.boardArr[fromI - 2][fromJ - 2] = "kingRed";
+
+                this.board.render(this.boardArr, this.cells);
+                // this.myTimer = 1;
+                this.board.turnsManagement.turn = "you";
+            }, 1000);
+            return true;
+        }
+        if (existKings && this.isKingCanEatRightUp(kingCurrent.i, kingCurrent.j)) {
+            console.log("יש אכילה בימין");
+            const fromI = kingCurrent.i;
+            const fromJ = kingCurrent.j;
+            setTimeout(() => {
+                this.cells[fromI][fromJ].innerHTML = "";
+                this.boardArr[fromI][fromJ] = "true";
+                this.boardArr[fromI - 1][fromJ + 1] = "true";
+                this.cells[fromI - 1][fromJ + 1].innerHTML = "";
+                this.boardArr[fromI - 2][fromJ + 2] = "kingRed";
+
+                this.board.render(this.boardArr, this.cells);
+                // this.myTimer = 1;
+                this.board.turnsManagement.turn = "you";
+            }, 1000);
+            return true;
+        }
+
+        if (existKings && this.isKingRedMoveLeftUp(kingCurrent.i, kingCurrent.j)) {
+            console.log("יש תנועה בשמאל");
+            const fromI = kingCurrent.i;
+            const fromJ = kingCurrent.j;
+
+            setTimeout(() => {
+                this.cells[fromI][fromJ].innerHTML = "";
+                this.boardArr[fromI][fromJ] = "true";
+                this.boardArr[fromI - 1][fromJ - 1] = "kingRed";
+
+                this.board.render(this.boardArr, this.cells);
+                // this.myTimer = 1;
+                this.board.turnsManagement.turn = "you";
+            }, 1000);
+            return true;
+        }
+
+        if (existKings && this.isKingRedMoveRightUp(kingCurrent.i, kingCurrent.j)) {
+            console.log("יש תנועה בימין");
+            const fromI = kingCurrent.i;
+            const fromJ = kingCurrent.j;
+
+            setTimeout(() => {
+                this.cells[fromI][fromJ].innerHTML = "";
+                this.boardArr[fromI][fromJ] = "true";
+                this.boardArr[fromI - 1][fromJ + 1] = "kingRed";
+
+                this.board.render(this.boardArr, this.cells);
+                // this.myTimer = 1;
+                this.board.turnsManagement.turn = "you";
+            }, 1000);
+            return true;
+        }
+        return false; // אם לא בוצע אף מהלך עם מלך
+    }
+    
+
+
+    isKingRedMoveLeftUp(_i, _j) {
+        if (_i !== 0 && _j >= 1) {
+            if (this.boardArr[_i - 1][_j - 1] === "true") {
+                return true;
+            }
+        }
+        return false;
+    }
+    isKingRedMoveRightUp(_i, _j) {
+        if (_i !== 0 && _j < this.boardArr.length - 2) {
+            if (this.boardArr[_i - 1][_j + 1] === "true") {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    isKingCanEatLeftUp(_i, _j) {
+        if (_i > 1 && _j > 1) {
+            if (this.boardArr[_i - 1][_j - 1] === "dark" || this.boardArr[_i - 1][_j - 1] === "kingDark") {
+                if (this.boardArr[_i - 2][_j - 2] === "true")
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    isKingCanEatRightUp(_i, _j) {
+        if (_i > 1 && _j < this.boardArr.length - 2) {
+            if (this.boardArr[_i - 1][_j + 1] === "dark" || this.boardArr[_i - 1][_j + 1] === "kingDark") {  // הוספת בדיקה למלך שחור
+                if (this.boardArr[_i - 2][_j + 2] === "true") {
+                    console.log("נמצאה אפשרות אכילה ימינה למעלה");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+}
+export default Opponent;
