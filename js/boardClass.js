@@ -20,6 +20,7 @@ class Board {
             this.render(this.boardArr, this.cells);
             this.storage.updaterDarkCounter();
             this.storage.updaterRedCounter();
+            this.continueOrRestart();
         });
 
         this.direction = null;
@@ -115,18 +116,64 @@ class Board {
         console.log("data:" + usersData[this.storage.indexUser].dataGame);
         this.boardArr = usersData[this.storage.indexUser].dataGame;
     }
-    victory() {
-        if (this.counterRedPawn === 0) {
-            this.resetBoard();
-            // this.updeteDataGameInLocalStor();
-            // this.updetePawnDiedInLocalStor();
-
-            setTimeout(() => {
-                console.log("you won!!!!!!!!!!");
-                window.location.href = "./victory.html";
-            }, 1500)
+    removeAllPawn() {
+        for (let i = 0; i < this.cells.length; i++) {
+            for (let j = 0; j < this.cells[i].length; j++) {
+                while (this.cells[i][j].firstChild) {
+                    this.cells[i][j].removeChild(this.cells[i][j].firstChild);
+                }
+            }
+        }
+        for (let i = 0; i < this.boardArr.length; i++) {
+            for (let j = 0; j < this.boardArr[i].length; j++) {
+                if ((j + i) % 2 == 0) {
+                    if (i <= 2) this.boardArr[i][j] = "red";
+                    else if (i >= 5) this.boardArr[i][j] = "dark";
+                    else if (i > 2 && i < 5) this.boardArr[i][j] = "true"
+                }
+                else this.boardArr[i][j] = null;
+            }
         }
     }
+    continueOrRestart() {
+        const container = document.querySelector(".container");
+        const options = document.createElement("div");
+        options.textContent = "What would you like to do?"
+        options.className = "options";
+        container.appendChild(options);
+
+        const buttons = document.createElement("div");
+        buttons.className = "cr";
+        const continueGame = document.createElement("button");
+        continueGame.textContent = "continue";
+        const restartGame = document.createElement("button");
+        restartGame.textContent = "restart";
+        buttons.appendChild(continueGame)
+        buttons.appendChild(restartGame);
+        options.appendChild(buttons);
+
+        const board = document.querySelector(".board");
+        board.style.opacity = "0.2";
+
+
+        continueGame.addEventListener("click", () => {
+            board.style.opacity = "1";
+            options.className = "hide";
+        });
+        restartGame.addEventListener("click", () => {
+            board.style.opacity = "1";
+            console.log("מתחיל איפוס משחק");
+            this.removeAllPawn();
+            this.storage.counterDarkPawn = 12;
+            this.storage.counterRedPawn = 12;
+            this.storage.updaterDarkCounter();
+            this.storage.updaterRedCounter();
+            options.className = "hide";
+            this.render(this.boardArr, this.cells);
+        });
+
+    }
+    
 
     resetBoard() {
         for (let i = 0; i < this.cells.length; i++) {

@@ -29,8 +29,128 @@ body {
 .hide {
     display: none;
 }
+.options{
+    /* background-image: url("../files/background11.jpg");
+    background-position: center center;
+    background-size: cover; */
+    background-color: rgb(0, 51, 82);
+    position: fixed; /* שינוי לפוזישן fixed */
+    top: 50%; /* מיקום אנכי במרכז */
+    left: 50%; /* מיקום אופקי במרכז */
+    transform: translate(-50%, -50%); /* מרכוז מדויק */
+    min-width: 300px;
+    min-height: 200px;
+    z-index: 1000; /* ערך z-index גבוה כדי להיות מעל שאר האלמנטים */
+    border-radius: 10px; /* עיגול פינות */
+    box-shadow: 0 0 10px rgba(0,0,0,0.5); /* הוספת צל */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;  
+    gap: 20px;
+    font-size: large;
+    color: rgb(134, 159, 164);
+    font-weight: bold;
+    animation: aniOP 0.5s;
+} 
+@keyframes aniOP {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}  
+/* .cr{ */
+    /* width: 80%; */
+    /* border: 3px solid red; */
+    /* display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 15px ;
+    animation: toLeft 0.3s; */
+    /* button{
+        background-color: rgb(165, 175, 176);
+        font-size: large;
+        border: none;
+        border-radius: 5px;
+    } */
+    /* button:hover{
+        border:  5px solid rgb(41, 88, 108);
+    }
+} */
+.cr {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 15px;
+    animation: toLeft 0.3s;
+}
+
+.cr button {
+    background-color: rgb(140, 161, 168);
+    color: rgb(186, 201, 202);
+    font-size: large;
+    border: none;
+    /* border: 3px solid rgb(33, 37, 41); */
+    border-radius: 5px;
+    padding: 10px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    transform-origin: center;
+    /* height: 50px; */
+    color: rgb(3, 52, 82);
+    width: 100px;
+
+}
+
+.cr button:hover {
+    background-color: rgb(52, 160, 207);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(153, 151, 151, 0.3);
+}
+
+.cr button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(107, 106, 106, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.9s, height 0.6s;
+}
+
+.cr button:hover::before {
+    width: 300%;
+    height: 300%;
+}
+
+.cr button:active {
+    transform: scale(0.95);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.cr button:focus {
+    outline: none;
+    animation: pulse 1s infinite;
+}
 
 .container {
+    /* border: 3px solid red; */
     width: 100%;
     margin: auto;
     /* position: relative; */

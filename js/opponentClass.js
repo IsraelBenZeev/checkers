@@ -141,7 +141,7 @@ class Opponent {
 
         if (arrMoveREd.length === 0) {
             console.log("אין לאן לזוז");
-            this.board.changeTurn("you");
+            this.board.turnsManagement.changeTurn("you");
             return;
         }
 
