@@ -1,3 +1,4 @@
+
 class EventListenerManager {
     constructor(_cells, _boardArr, _board) {
         this.cells = _cells;
@@ -16,7 +17,7 @@ class EventListenerManager {
     async initMove() {
         try {
             const MoveModule = await import('./moveClass.js');
-            this.move = new MoveModule.default(this.boardArr, this.cells, this.board);
+            this.move = new MoveModule.default(this.boardArr, this.cells, this.board, this.board.storage);
         } catch (error) {
             console.error("Could not load move module:", error);
         }
@@ -25,7 +26,7 @@ class EventListenerManager {
         try {
 
             const OpponentModule = await import('./opponentClass.js');
-            this.opponent = new OpponentModule.default(this.boardArr, this.cells, this.board);
+            this.opponent = new OpponentModule.default(this.boardArr, this.cells, this.board, this.board.storage);
         } catch (error) {
             console.error("Could not load opponent module:", error);
         }
@@ -41,10 +42,25 @@ class EventListenerManager {
         this.cells = _cells;
         this.boardArr = _boardAr;
 
-        // קבלת כל הכיוונים האפשריים
         this.returnDirectionForLIstiner(_cells, _directions, _i, _j);
 
-        // טיפול במהלכי תזוזה
+        for (const eat of this.listenersEat) {
+            const handler = () => {
+                console.log("Eat move clicked at:", "I:", eat.i, "J:", eat.j);
+                const diedI = (_i + eat.i) / 2;
+                const diedJ = (_j + eat.j) / 2;
+                this.move.moveEat(_i, _j, eat.i, eat.j, diedI, diedJ, this.boardArr, this.cells);
+                this.removeListiners(_cells);
+                this.board.resetBoard();
+                this.opponent.moveDown(this.boardArr, this.cells);
+            };
+
+            this.handlers.push({
+                element: this.cells[eat.i][eat.j],
+                handlerFunction: handler
+            });
+            this.cells[eat.i][eat.j].addEventListener("click", handler);
+        }
         for (const move of this.listenersMoves) {
             const handler = () => {
                 console.log("Move clicked at:", "I:", move.i, "J:", move.j);
@@ -65,24 +81,6 @@ class EventListenerManager {
             this.cells[move.i][move.j].addEventListener("click", handler);
         }
 
-        // טיפול במהלכי אכילה
-        for (const eat of this.listenersEat) {
-            const handler = () => {
-                console.log("Eat move clicked at:", "I:", eat.i, "J:", eat.j);
-                const diedI = (_i + eat.i) / 2;
-                const diedJ = (_j + eat.j) / 2;
-                this.move.moveEat(_i, _j, eat.i, eat.j, diedI, diedJ, this.boardArr, this.cells);
-                this.removeListiners(_cells);
-                this.board.resetBoard();
-                this.opponent.moveDown(this.boardArr, this.cells);
-            };
-
-            this.handlers.push({
-                element: this.cells[eat.i][eat.j],
-                handlerFunction: handler
-            });
-            this.cells[eat.i][eat.j].addEventListener("click", handler);
-        }
     }
     removeListiners(_cells) {
         this.cells = _cells;

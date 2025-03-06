@@ -1,8 +1,9 @@
-class Opponent{
-    constructor(_boardArr, _cells, _board){
+class Opponent {
+    constructor(_boardArr, _cells, _board, _storage) {
         this.boardArr = _boardArr;
         this.cells = _cells;
         this.board = _board;
+        this.storage = _storage;
     }
     isKingDark(_i, _j) {
         return this.boardArr[_i][_j] === "kingDark";
@@ -61,6 +62,8 @@ class Opponent{
         for (let k = 0; k < arrRed.length; k++) {
             const currentPawn = arrRed[k];
             if (this.isRedCanEatLeft(currentPawn.i, currentPawn.j)) {
+                console.log("יש אכילה בשמאל");
+                
                 const fromI = currentPawn.i;
                 const fromJ = currentPawn.j;
                 const toI = fromI + 2;
@@ -68,12 +71,12 @@ class Opponent{
 
                 setTimeout(() => {
                     if (this.isKingRed(fromI, fromJ) || toI === this.boardArr.length - 1) {
-
-                        console.log("נהיה מלך");
-
+                        if (!(this.isKingRed(fromI, fromJ)) && toI === this.boardArr.length - 1) this.board.sound.playKing()
                         this.boardArr[toI][toJ] = "kingRed";
+
                     } else {
                         this.boardArr[toI][toJ] = "red";
+                        this.board.sound.playEating();
                     }
 
                     this.boardArr[fromI][fromJ] = "true";
@@ -81,17 +84,20 @@ class Opponent{
                     this.cells[fromI][fromJ].innerHTML = "";
                     this.cells[fromI + 1][fromJ - 1].innerHTML = "";
 
-                    // this.storage.counterDarkPawn--;
-                    // this.storage.updaterDarkCounter();
+                    this.board.sound.playEating()
+
+                    if (this.storage) this.storage.decrementCounterDark();
+                    else console.log("המחלקה עוד לא נוצרה");
+
+                    this.board.turnsManagement.changeTurn("you");
+
                     this.board.render(this.boardArr, this.cells);
-                    // this.sound.playEting();
-                    // this.myTimer = 1;
-                    
                 }, 1000);
 
                 return;
             }
             else if (this.isRedCanEatRight(currentPawn.i, currentPawn.j)) {
+                console.log("יש אכילה בימין");
                 const fromI = currentPawn.i;
                 const fromJ = currentPawn.j;
                 const toI = fromI + 2;
@@ -99,21 +105,24 @@ class Opponent{
 
                 setTimeout(() => {
                     if (this.isKingRed(fromI, fromJ) || toI === this.boardArr.length - 1) {
+                        if (!(this.isKingRed(fromI, fromJ)) && toI === this.boardArr.length - 1) {
+                            this.board.sound.playKing();
+                        }
                         this.boardArr[toI][toJ] = "kingRed";
                     } else {
                         this.boardArr[toI][toJ] = "red";
+                        this.board.sound.playEating();
                     }
-                    // this.sound.playEting();
-
                     this.boardArr[fromI][fromJ] = "true";
                     this.boardArr[fromI + 1][fromJ + 1] = "true";
                     this.cells[fromI][fromJ].innerHTML = "";
                     this.cells[fromI + 1][fromJ + 1].innerHTML = "";
 
-                    // this.storage.counterDarkPawn--;
-                    // this.storage.updaterDarkCounter();
+                    if (this.storage) this.storage.decrementCounterDark();
+                    else console.log("המחלקה עוד לא נוצרה");
+                    this.board.turnsManagement.changeTurn("you");
+
                     this.board.render(this.boardArr, this.cells);
-                    // this.myTimer = 1;
                 }, 1000);
                 return;
             }
@@ -132,8 +141,7 @@ class Opponent{
 
         if (arrMoveREd.length === 0) {
             console.log("אין לאן לזוז");
-            // this.myTimer = 1;
-            this.board.turnsManagement.turn = "you";
+            this.board.changeTurn("you");
             return;
         }
 
@@ -148,15 +156,16 @@ class Opponent{
                 this.boardArr[fromI][fromJ] = "true";
                 if (this.isKingRed(fromI, fromJ) || fromI + 1 === this.boardArr.length - 1) {
                     this.boardArr[fromI + 1][fromJ - 1] = "kingRed";
+                    if((! this.isKingRed(fromI, fromJ)) && fromI + 1 === this.boardArr.length - 1){
+                        this.board.sound.playKing();
+                    }
+                    
                 } else {
                     this.boardArr[fromI + 1][fromJ - 1] = "red";
-                    // this.sound.stopAll();
-                    // this.sound.playMove();
+                    this.board.sound.playMove();
                 }
+                this.board.turnsManagement.changeTurn("you");
                 this.board.render(this.boardArr, this.cells);
-
-                // this.myTimer = 1;
-                this.board.turnsManagement.turn = "you";
             }, 1000);
             return;
         }
@@ -170,12 +179,16 @@ class Opponent{
                 this.boardArr[fromI][fromJ] = "true";
                 if (this.isKingRed(fromI, fromJ) || fromI + 1 === this.boardArr.length - 1) {
                     this.boardArr[fromI + 1][fromJ + 1] = "kingRed";
+                    if((!this.isKingRed(fromI, fromJ)) && fromI + 1 === this.boardArr.length - 1){
+                        this.board.sound.playKing();
+                    }
                 } else {
                     this.boardArr[fromI + 1][fromJ + 1] = "red";
+                    this.board.sound.playMove();
                 }
+                this.board.turnsManagement.changeTurn("you");
                 this.board.render(this.boardArr, this.cells);
-                // this.myTimer = 1;
-                this.board.turnsManagement.turn = "you";
+
             }, 1000);
             return;
         }
@@ -197,7 +210,7 @@ class Opponent{
         }
         let randomKing = Math.floor(Math.random() * kingsCanMove.length);
         let kingCurrent = kingsCanMove[randomKing];
-        let existKings = kingsCanMove.length > 0;  // התיקון כאן
+        let existKings = kingsCanMove.length > 0;
 
         if (existKings && this.isKingCanEatLeftUp(kingCurrent.i, kingCurrent.j)) {
             console.log("יש אכילה בשמאל");
@@ -211,9 +224,12 @@ class Opponent{
                 this.cells[fromI - 1][fromJ - 1].innerHTML = "";
                 this.boardArr[fromI - 2][fromJ - 2] = "kingRed";
 
+                this.board.sound.playEating();
+
                 this.board.render(this.boardArr, this.cells);
+
+                this.board.turnsManagement.changeTurn("you");
                 // this.myTimer = 1;
-                this.board.turnsManagement.turn = "you";
             }, 1000);
             return true;
         }
@@ -228,9 +244,12 @@ class Opponent{
                 this.cells[fromI - 1][fromJ + 1].innerHTML = "";
                 this.boardArr[fromI - 2][fromJ + 2] = "kingRed";
 
+                this.board.turnsManagement.changeTurn("you");
+
+                this.board.sound.playEating();
+
                 this.board.render(this.boardArr, this.cells);
                 // this.myTimer = 1;
-                this.board.turnsManagement.turn = "you";
             }, 1000);
             return true;
         }
@@ -245,9 +264,8 @@ class Opponent{
                 this.boardArr[fromI][fromJ] = "true";
                 this.boardArr[fromI - 1][fromJ - 1] = "kingRed";
 
+                this.board.turnsManagement.changeTurn("you");
                 this.board.render(this.boardArr, this.cells);
-                // this.myTimer = 1;
-                this.board.turnsManagement.turn = "you";
             }, 1000);
             return true;
         }
@@ -262,15 +280,14 @@ class Opponent{
                 this.boardArr[fromI][fromJ] = "true";
                 this.boardArr[fromI - 1][fromJ + 1] = "kingRed";
 
+                this.board.turnsManagement.changeTurn("you");
                 this.board.render(this.boardArr, this.cells);
-                // this.myTimer = 1;
-                this.board.turnsManagement.turn = "you";
             }, 1000);
             return true;
         }
         return false; // אם לא בוצע אף מהלך עם מלך
     }
-    
+
 
 
     isKingRedMoveLeftUp(_i, _j) {

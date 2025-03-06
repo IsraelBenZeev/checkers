@@ -1,5 +1,7 @@
 const COLOR_BOARD_DARK = "rgb(41, 88, 108)";
 const COLOR_MOVE = "rgb(10, 163, 229)";
+// import {Sound}from './soundClass.js';
+
 
 class Board {
     constructor(_parent, _row, _col) {
@@ -12,10 +14,9 @@ class Board {
         this.pawnClickHandler = null;
         this.storage = null;
         this.initTurnsManagement().then(() => this.initStorage()).then(() => {
-            console.log("boardArr: " + this.boardArr);
+            this.initMove();
             console.log("fill arr");
             this.fillArr();
-            console.log("boardArr aftere fil arr: " + this.boardArr);
             this.render(this.boardArr, this.cells);
             this.storage.updaterDarkCounter();
             this.storage.updaterRedCounter();
@@ -35,13 +36,13 @@ class Board {
         this.eventListenerManager = null;
         this.initEventListenerManager();
         this.move = null;
-        this.initMove();
+        // this.initMove();
     }
 
     async initSound() {
         try {
             const SoundModule = await import('./soundClass.js');
-            this.sound = new SoundModule.default("./files/sounds/click.wav", "./files/sounds/eat.mp3", "./files/sounds/move2.mp3", "./files/sounds/king.wav");
+            this.sound = new SoundModule.default();
         } catch (error) {
             console.error("Could not load sound module:", error);
         }
@@ -82,7 +83,7 @@ class Board {
     async initMove() {
         try {
             const MoveModule = await import('./moveClass.js');
-            this.move = new MoveModule.default(this.boardArr, this.cells, this);
+            this.move = new MoveModule.default(this.boardArr, this.cells, this, this.storage);
         } catch (error) {
             console.error("Could not load move module:", error);
         }
@@ -197,12 +198,12 @@ class Board {
 
                     this.pawnClickHandler = () => {
                         if (this.turnsManagement.returnTurnYou()) {
+                            this.sound.playClick();
                             console.log("turn in first: " + this.turnsManagement.turn);
                             console.log("click:   i:" + i + ", j: " + j);
                             console.log("counter red: " + this.counterRedPawn);
                             console.log("counter my: " + this.storage.counterDarkPawn);
 
-                            this.sound.playClick();
                             this.resetBoard();
                             this.cells[i][j].style.border = "2px solid white";
                             this.cells[i][j].style.borderRadius = "5px"

@@ -73,5 +73,18 @@ class Storage {
         }
     }
 
+    decrementCounterRed(){
+        console.log("enter to counter red");
+        
+        this.counterRedPawn -= 1;
+        this.updaterRedCounter();
+    }
+    decrementCounterDark(){
+        console.log("enter to decrementCounterDark");
+        
+        this.counterDarkPawn -= 1;
+        this.updaterDarkCounter();
+    }
+
 }
 export default Storage;

@@ -1,9 +1,9 @@
 class Sound{
-    constructor(_click, _eating, _move, _king){
-        this.click = _click;
-        this.eating = _eating;
-        this.move = _move;
-        this.king = _king;
+    constructor(){
+        this.click = "./files/sounds/click.wav";
+        this.eating = "./files/sounds/eat.mp3";
+        this.move = "./files/sounds/move2.mp3";
+        this.king = "./files/sounds/king.wav";
     }
     playClick(){
         const sound  = new Audio(this.click);
@@ -13,7 +13,7 @@ class Sound{
         const sound  = new Audio(this.click);
         sound.pause();
     }
-    playEting(){
+    playEating(){
         const sound  = new Audio(this.eating);
         sound.play();
     }
@@ -43,5 +43,4 @@ class Sound{
         this.stopKing();
     }
 }
-
 export default Sound;
