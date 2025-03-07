@@ -1,7 +1,7 @@
 const COLOR_BOARD_DARK = "rgb(41, 88, 108)";
 const COLOR_MOVE = "rgb(10, 163, 229)";
+// import { userState } from "./log-in.js";
 // import {Sound}from './soundClass.js';
-
 
 class Board {
     constructor(_parent, _row, _col) {
@@ -20,7 +20,9 @@ class Board {
             this.render(this.boardArr, this.cells);
             this.storage.updaterDarkCounter();
             this.storage.updaterRedCounter();
-            this.continueOrRestart();
+            if(this.returnIsNewUser() === "true") this.continueOrRestart();
+            // console.log("returnIsNewUser: "+this.returnIsNewUser());
+            
         });
 
         this.direction = null;
@@ -39,7 +41,9 @@ class Board {
         this.move = null;
         // this.initMove();
     }
-
+    returnIsNewUser(){
+        return localStorage.getItem("isNewUser");
+    }
     async initSound() {
         try {
             const SoundModule = await import('./soundClass.js');

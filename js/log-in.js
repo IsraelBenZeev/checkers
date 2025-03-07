@@ -58,6 +58,9 @@ const updetVal = () => {
         password_val = document.querySelector("#password").value;
     }
 };
+const updateIsNewUserInLocalStorage = (tr)=>{
+    localStorage.setItem("isNewUser", tr);
+};
 
 const submit1 = (e) => {
     e.preventDefault(); // מונע את רענון הדף
@@ -65,12 +68,13 @@ const submit1 = (e) => {
     if (checkName() && checkMail()) {
         addUserToLocalStor();
         setTimeout(() => {
+            updateIsNewUserInLocalStorage("false");
             localStorage.setItem("currentUser", name_val);
             window.location.href = "game.html";
         }, 500);
-
-    }
-};
+        
+    };
+}
 
 const submit2 = (e) => {
     e.preventDefault(); // מונע את רענון הדף
@@ -78,6 +82,7 @@ const submit2 = (e) => {
     if (checkAll()) {
         setTimeout(() => {
             localStorage.setItem("currentUser", name_val);
+            updateIsNewUserInLocalStorage("true");
             window.location.href = "game.html";
 
         }, 500);
