@@ -63,7 +63,7 @@ class Opponent {
             const currentPawn = arrRed[k];
             if (this.isRedCanEatLeft(currentPawn.i, currentPawn.j)) {
                 console.log("יש אכילה בשמאל");
-                
+
                 const fromI = currentPawn.i;
                 const fromJ = currentPawn.j;
                 const toI = fromI + 2;
@@ -142,6 +142,9 @@ class Opponent {
         if (arrMoveREd.length === 0) {
             console.log("אין לאן לזוז");
             this.board.turnsManagement.changeTurn("you");
+            const users = JSON.parse(localStorage.getItem("users"));
+            users[this.board.storage.indexUser].wins++;
+            localStorage.setItem("users", JSON.stringify(users));
             return;
         }
 
@@ -156,10 +159,10 @@ class Opponent {
                 this.boardArr[fromI][fromJ] = "true";
                 if (this.isKingRed(fromI, fromJ) || fromI + 1 === this.boardArr.length - 1) {
                     this.boardArr[fromI + 1][fromJ - 1] = "kingRed";
-                    if((! this.isKingRed(fromI, fromJ)) && fromI + 1 === this.boardArr.length - 1){
+                    if ((!this.isKingRed(fromI, fromJ)) && fromI + 1 === this.boardArr.length - 1) {
                         this.board.sound.playKing();
                     }
-                    
+
                 } else {
                     this.boardArr[fromI + 1][fromJ - 1] = "red";
                     this.board.sound.playMove();
@@ -179,7 +182,7 @@ class Opponent {
                 this.boardArr[fromI][fromJ] = "true";
                 if (this.isKingRed(fromI, fromJ) || fromI + 1 === this.boardArr.length - 1) {
                     this.boardArr[fromI + 1][fromJ + 1] = "kingRed";
-                    if((!this.isKingRed(fromI, fromJ)) && fromI + 1 === this.boardArr.length - 1){
+                    if ((!this.isKingRed(fromI, fromJ)) && fromI + 1 === this.boardArr.length - 1) {
                         this.board.sound.playKing();
                     }
                 } else {

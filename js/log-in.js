@@ -58,7 +58,7 @@ const updetVal = () => {
         password_val = document.querySelector("#password").value;
     }
 };
-const updateIsNewUserInLocalStorage = (tr)=>{
+const updateIsNewUserInLocalStorage = (tr) => {
     localStorage.setItem("isNewUser", tr);
 };
 
@@ -68,11 +68,11 @@ const submit1 = (e) => {
     if (checkName() && checkMail()) {
         addUserToLocalStor();
         setTimeout(() => {
-            updateIsNewUserInLocalStorage("false");
+            updateIsNewUserInLocalStorage("true");
             localStorage.setItem("currentUser", name_val);
             window.location.href = "game.html";
         }, 500);
-        
+
     };
 }
 
@@ -82,7 +82,7 @@ const submit2 = (e) => {
     if (checkAll()) {
         setTimeout(() => {
             localStorage.setItem("currentUser", name_val);
-            updateIsNewUserInLocalStorage("true");
+            updateIsNewUserInLocalStorage("false");
             window.location.href = "game.html";
 
         }, 500);
@@ -94,7 +94,7 @@ form[1].addEventListener("submit", submit2);
 
 const addUserToLocalStor = () => {
     console.log("addUserToLocalStor");
-    const user = new User(name_val, mail_val, password_val, dataGame, pawnDied)
+    const user = new User(name_val, mail_val, password_val, dataGame, pawnDied, 0,0,1);
     users.push(user);
     localStorage.setItem("users", JSON.stringify(users));
 }

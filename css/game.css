@@ -29,7 +29,7 @@ body {
 .hide {
     display: none;
 }
-.options{
+.options, .yourResults{
     /* background-image: url("../files/background11.jpg");
     background-position: center center;
     background-size: cover; */
@@ -63,25 +63,7 @@ body {
         opacity: 1;
     }
 }  
-/* .cr{ */
-    /* width: 80%; */
-    /* border: 3px solid red; */
-    /* display: flex;
-    justify-content: space-between;
-    align-items: start;
-    gap: 15px ;
-    animation: toLeft 0.3s; */
-    /* button{
-        background-color: rgb(165, 175, 176);
-        font-size: large;
-        border: none;
-        border-radius: 5px;
-    } */
-    /* button:hover{
-        border:  5px solid rgb(41, 88, 108);
-    }
-} */
-.cr {
+.cr, .closeAccount {
     width: 80%;
     display: flex;
     justify-content: space-between;
@@ -90,7 +72,7 @@ body {
     animation: toLeft 0.3s;
 }
 
-.cr button {
+.cr button, .yourResults button {
     background-color: rgb(140, 161, 168);
     color: rgb(186, 201, 202);
     font-size: large;
@@ -106,17 +88,21 @@ body {
     /* height: 50px; */
     color: rgb(3, 52, 82);
     width: 100px;
+    text-align: center;
+    display:  flex;
+    justify-content: center;
+    align-items:  center;
 
 }
 
-.cr button:hover {
-    background-color: rgb(52, 160, 207);
+.cr button:hover, .yourResults button:hover {
+    background-color: rgb(157, 192, 207);
     color: white;
     transform: scale(1.1);
     box-shadow: 0 5px 15px rgba(153, 151, 151, 0.3);
 }
 
-.cr button::before {
+.cr button::before, .yourResults button::before {
     content: '';
     position: absolute;
     top: 50%;
@@ -129,12 +115,12 @@ body {
     transition: width 0.9s, height 0.6s;
 }
 
-.cr button:hover::before {
+.cr button::before, .yourResults button::before {
     width: 300%;
     height: 300%;
 }
 
-.cr button:active {
+.cr button:active, .yourResults button:active {
     transform: scale(0.95);
 }
 
@@ -144,9 +130,25 @@ body {
     100% { transform: scale(1); }
 }
 
-.cr button:focus {
+.cr button:focus, .yourResults button:focus  {
     outline: none;
     animation: pulse 1s infinite;
+}
+.yourResults{
+   flex-direction: column;
+   height: fit-content;
+   min-height: 300px;
+   div{
+    /* border: 2px solid red; */
+    background-color: rgb(165, 175, 176);
+    color: rgb(0, 51, 82);
+    font-size: x-large;
+    width: 80%;
+    border-radius: 5px;
+   }
+    button{
+        height: 15px;   
+    }
 }
 
 .container {

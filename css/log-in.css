@@ -240,7 +240,7 @@ input {
 }
 
 .enter {
-    color: var(--primary);
+    color: white;
     /* color: bisque; */
     text-decoration: underline;
 }

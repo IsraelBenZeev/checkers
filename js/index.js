@@ -27,6 +27,46 @@ const home = () => {
 const restart = () => {
     window.location.reload()
 };
+const hamburger = document.querySelector(".hamburger");
+const buttons2 = document.querySelector(".buttons2");
+const yourAccount = ()=>{
+    const existingResults = document.querySelector(".yourResults");
+    if (existingResults) {
+        return; // אם החלון קיים, צא מהפונקציה
+    }
+    const users = JSON.parse(localStorage.getItem("users"));
+    const currentUser = users[game.storage.indexUser];
+    const youruserName = currentUser.username;
+    const yourMail = currentUser.mail;
+    const yourWinns = currentUser.wins;
+    const yourLosses = currentUser.losses;
+    const yourGames = currentUser.games;
+    const results = document.createElement("div");
+    results.className = "yourResults";
+    const divName = document.createElement("div");
+    divName.textContent = "name: "+youruserName;
+    const divGames = document.createElement("div");
+    divGames.textContent = "games: "+yourGames;
+    const divWins = document.createElement("div");
+    divWins.textContent ="winss: "+ yourWinns;
+    const divLoses = document.createElement("div");
+    divLoses.textContent = "lose: "+yourLosses;
+    results.append(divName, divGames, divWins, divLoses);
+    const container = document.querySelector(".container");
+
+    container.appendChild(results);
+    console.log(youruserName +", "+yourMail+", "+yourWinns+".");
+    buttons2.style.display = "none";
+    hamburger.style.display = "flex";
+    document.querySelector(".container").style.opacity = "100%"
+    const back = document.createElement("button");
+    back.textContent = "close";
+    back.className = "closeAccount";
+    back.addEventListener("click", ()=>{
+        results. className = "hide";
+    });
+    results.appendChild(back);
+};
 const newData = new Array(8).fill().map(() => Array(8).fill(null));
 const resetData = () => {
     for (let i = 0; i < newData.length; i++) {
@@ -61,9 +101,7 @@ const clearLocalStore = () => {
 
 };
 
-const hamburger = document.querySelector(".hamburger");
 const close = document.querySelector(".close");
-const buttons2 = document.querySelector(".buttons2");
 hamburger.addEventListener("click", () => {
     buttons2.style.display = "flex";
     hamburger.style.display = "none"

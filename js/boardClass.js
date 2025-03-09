@@ -20,9 +20,11 @@ class Board {
             this.render(this.boardArr, this.cells);
             this.storage.updaterDarkCounter();
             this.storage.updaterRedCounter();
-            if(this.returnIsNewUser() === "true") this.continueOrRestart();
-            // console.log("returnIsNewUser: "+this.returnIsNewUser());
-            
+            if (this.returnIsNewUser() === "false") {
+                this.continueOrRestart();
+                localStorage.setItem("isNewUser", "true");
+            }
+            // else 
         });
 
         this.direction = null;
@@ -40,9 +42,6 @@ class Board {
         this.initEventListenerManager();
         this.move = null;
         // this.initMove();
-    }
-    returnIsNewUser(){
-        return localStorage.getItem("isNewUser");
     }
     async initSound() {
         try {
@@ -139,6 +138,9 @@ class Board {
             }
         }
     }
+    returnIsNewUser() {
+        return localStorage.getItem("isNewUser");
+    }
     continueOrRestart() {
         const container = document.querySelector(".container");
         const options = document.createElement("div");
@@ -177,7 +179,8 @@ class Board {
         });
 
     }
-    
+
+
 
     resetBoard() {
         for (let i = 0; i < this.cells.length; i++) {
@@ -205,6 +208,7 @@ class Board {
 
     render(_boardAr, _cells) {
         console.log("enter to reder");
+        // this.yourAccount();
         this.boardArr = _boardAr;
         this.cells = _cells;
         this.storage.updeteDataGameInLocalStor(this.boardArr);
@@ -270,3 +274,18 @@ class Board {
         }
     }
 }
+
+// const yourAccount = ()=>{
+//     const users = JSON.parse(localStorage.getItem("users"));
+//     const currentUser = users[this.storage.indexUser];
+//     const youruserName = currentUser.username;
+//     const yourMail = currentUser.mail;
+//     const yourWinns = currentUser.winns;
+//     const results = document.createElement("div");
+//     const container = document.querySelector(".container");
+//     results.appendChild(youruserName);
+//     results.appendChild(yourMail);
+//     results.appendChild(yourWinns);
+//     const boardResults = createElement("div");
+//     boardResults.appendChild(results);
+// };
