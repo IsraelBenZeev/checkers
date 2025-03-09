@@ -2,8 +2,8 @@ const COLOR_BOARD_DARK = "rgb(41, 88, 108)";
 const COLOR_MOVE = "rgb(10, 163, 229)";
 // import { userState } from "./log-in.js";
 // import {Sound}from './soundClass.js';
-
-class Board {
+import { windowVictory } from './victoryManagement.js';
+export class Board {
     constructor(_parent, _row, _col) {
         this.parent = _parent;
         this.row = _row;
@@ -43,6 +43,9 @@ class Board {
         this.move = null;
         // this.initMove();
     }
+    victory(){
+        windowVictory();
+    };
     async initSound() {
         try {
             const SoundModule = await import('./soundClass.js');
@@ -274,18 +277,3 @@ class Board {
         }
     }
 }
-
-// const yourAccount = ()=>{
-//     const users = JSON.parse(localStorage.getItem("users"));
-//     const currentUser = users[this.storage.indexUser];
-//     const youruserName = currentUser.username;
-//     const yourMail = currentUser.mail;
-//     const yourWinns = currentUser.winns;
-//     const results = document.createElement("div");
-//     const container = document.querySelector(".container");
-//     results.appendChild(youruserName);
-//     results.appendChild(yourMail);
-//     results.appendChild(yourWinns);
-//     const boardResults = createElement("div");
-//     boardResults.appendChild(results);
-// };

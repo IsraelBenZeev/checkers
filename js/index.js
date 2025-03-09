@@ -1,5 +1,10 @@
+import { Board } from './boardClass.js';
+import { windowVictory } from './victoryManagement.js';
+
 const board = document.querySelector(".board");
 const game = new Board(".board", 8, 8);
+window.windowVictory = windowVictory;
+
 // drawBord.fillArr();
 
 game.drawBoard();
@@ -29,10 +34,10 @@ const restart = () => {
 };
 const hamburger = document.querySelector(".hamburger");
 const buttons2 = document.querySelector(".buttons2");
-const yourAccount = ()=>{
+window.yourAccount = () => {
     const existingResults = document.querySelector(".yourResults");
     if (existingResults) {
-        return; // אם החלון קיים, צא מהפונקציה
+        return; 
     }
     const users = JSON.parse(localStorage.getItem("users"));
     const currentUser = users[game.storage.indexUser];
@@ -44,26 +49,30 @@ const yourAccount = ()=>{
     const results = document.createElement("div");
     results.className = "yourResults";
     const divName = document.createElement("div");
-    divName.textContent = "name: "+youruserName;
+    divName.textContent = "name: " + youruserName;
     const divGames = document.createElement("div");
-    divGames.textContent = "games: "+yourGames;
+    divGames.textContent = "games: " + yourGames;
     const divWins = document.createElement("div");
-    divWins.textContent ="winss: "+ yourWinns;
+    divWins.textContent = "winss: " + yourWinns;
     const divLoses = document.createElement("div");
-    divLoses.textContent = "lose: "+yourLosses;
+    divLoses.textContent = "lose: " + yourLosses;
     results.append(divName, divGames, divWins, divLoses);
     const container = document.querySelector(".container");
-
     container.appendChild(results);
-    console.log(youruserName +", "+yourMail+", "+yourWinns+".");
+    console.log(youruserName + ", " + yourMail + ", " + yourWinns + ".");
+    board.style.opacity = "0.3";
     buttons2.style.display = "none";
-    hamburger.style.display = "flex";
+    // hamburger.style.display = "flex";
     document.querySelector(".container").style.opacity = "100%"
     const back = document.createElement("button");
     back.textContent = "close";
     back.className = "closeAccount";
-    back.addEventListener("click", ()=>{
-        results. className = "hide";
+    back.addEventListener("click", () => {
+        results.className = "hide";
+        board.style.opacity = "1";
+        if (window.innerWidth < 681) {
+            hamburger.style.display = "flex";
+        }
     });
     results.appendChild(back);
 };
@@ -82,7 +91,7 @@ const resetData = () => {
 
 
 
-const clearLocalStore = () => {
+ window.clearLocalStore = () => {
     console.log("מתחיל איפוס משחק");
     resetData();
     const usersData = JSON.parse(localStorage.getItem("users")) || [];

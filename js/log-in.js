@@ -94,7 +94,7 @@ form[1].addEventListener("submit", submit2);
 
 const addUserToLocalStor = () => {
     console.log("addUserToLocalStor");
-    const user = new User(name_val, mail_val, password_val, dataGame, pawnDied, 0,0,1);
+    const user = new User(name_val, mail_val, password_val, dataGame, pawnDied);
     users.push(user);
     localStorage.setItem("users", JSON.stringify(users));
 }
