@@ -1,3 +1,7 @@
+// import {funForBoard} from './index.js'
+let gameInstance; // משתנה גלובלי לשמירת המופע
+
+import { Board } from './boardClass.js'
 let name_val, mail_val, mailAgain_val, password_val;
 const container = document.querySelector(".container");
 
@@ -67,10 +71,12 @@ const submit1 = (e) => {
     console.log("submit1");
     if (checkName() && checkMail()) {
         addUserToLocalStor();
+
         setTimeout(() => {
             updateIsNewUserInLocalStorage("true");
             localStorage.setItem("currentUser", name_val);
-            window.location.href = "game.html";
+            openBoard();
+            // window.location.href = "game.html";
         }, 500);
 
     };
@@ -83,7 +89,8 @@ const submit2 = (e) => {
         setTimeout(() => {
             localStorage.setItem("currentUser", name_val);
             updateIsNewUserInLocalStorage("false");
-            window.location.href = "game.html";
+            openBoard();
+            // window.location.href = "game.html";
 
         }, 500);
     }
@@ -202,19 +209,74 @@ const checkAll = () => {
         }
     }
     return isUserExsist;
-    // if (localStorage.getItem("username") === name_val &&
-    //     localStorage.getItem("password") === password_val) {
-    //     return true;
-    // }
-    // else {
-    //     if (localStorage.getItem("username") !== name_val) {
-    //         error_name2.textContent = "The username you entered does not motch"
-    //     }
-    //     else error_name2.textContent = "";
-    //     if (localStorage.getItem("password") !== password_val) {
-    //         errorPassword2.textContent = "The password you entered does not motch"
-    //     }
-    //     else errorPassword2.textContent = "";
-    // }
-    // return false;
+
 }
+const updateIsLogIn = (tr) => {
+    localStorage.setItem("isLogIn", tr);
+};
+const returnIsLogIn = () => {
+    return localStorage.getItem("isLogIn") === "true";
+};
+// export const openBoard = async () => {
+// export const openBoard = async () => {
+ const openBoard = async () => {
+    updateIsLogIn("true");
+    const body = document.querySelector("body");
+    body.innerHTML = `
+    <div class="containerBoard center">
+       <img class="hamburger" src="./files/hamburger.png" alt="icon hamburger">
+        <!-- <div class="information center"> -->
+        <div class="name center"></div>
+        <p class="txt">חיילים שנאכלו</p>
+        <div class="pawns-red-ded center"></div>
+        <div class="pawns-dark-ded center"></div>
+        <div class="timer center"></div>
+        <!-- </div> -->
+        <!-- <main class="main center"> -->
+        <h1 class="title text-center display-4 fw-bold mt-3 mb-4 center">Cherkers Game</h1>
+        <div id="board" class="board"></div>
+        <!-- </main> -->
+        <div class="buttons center">
+            <img class="logo" src="./files/logo.png" alt="">
+            <button id="goHome" class="btn btn-dark">home</button>
+            <button id="yourAccount" class="yourAccount btn btn-dark">your account</button>
+            <button id="insractions" class="btn btn-dark">insractions</button>
+            <button id"boardResults" class="btn btn-dark">board results</button>
+            <button id="restart" class="btn btn-dark clear">restart</button>
+        </div>
+          <div class="buttons2 center">
+        <!-- <img class="close" src="./files/icon_clos.png"  alt=""> -->
+        <i class="close fa fa-times-circle" aria-hidden="true"></i>
+        <img class="logo2" src="./files/logo.png" alt="">
+        <button id="goHome" class="btn btn-dark">home</button>
+        <button id="yourAccount" class="yourAccount btn btn-dark">your account</button>
+        <button id="insractions" class="btn btn-dark">insractions</button>
+        <button id"boardResults" class="btn btn-dark">board results</button>
+        <button id="restart" class="btn btn-dark clear">restart</button>
+    </div>
+    </div>
+    `;
+
+
+    // הוספת קישורי CSS מחדש
+    document.head.innerHTML = `
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+     <link rel="stylesheet" href="./css/game.css">
+ `;
+
+    // יצירת אלמנט script בצורה תקינה
+    const script = document.createElement('script');
+    script.src = './js/funOfBoard.js';
+    // script.type = "module";  // הוספת שורה זו
+    document.body.appendChild(script);
+    
+    // טעינת המשחק לאחר שה-DOM התעדכן
+    await import('./boardClass.js').then(module => {
+        gameInstance = new module.Board(".board", 8, 8);
+        gameInstance.drawBoard();
+        window.gameInstance = gameInstance; // שמירה על Window
+    }).catch(err => console.error('Error loading board:', err));
+};

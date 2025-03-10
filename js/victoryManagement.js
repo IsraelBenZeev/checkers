@@ -28,7 +28,7 @@ export const windowVictory = () => {
     document.querySelector(".pawns-red-ded").style.display = "none";
     document.querySelector(".hamburger").style.display = "none";
     document.querySelector(".buttons2").style.display = "none";
-    victory.style.opacity = "1.0";
+    container.style.opacity = "1.0";
     const title = document.createElement("div");
     title.textContent = "YOU WINNER!!!!"
     victory.appendChild(title);

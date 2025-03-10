@@ -43,7 +43,7 @@ export class Board {
         this.move = null;
         // this.initMove();
     }
-    victory(){
+    victory() {
         windowVictory();
     };
     async initSound() {
@@ -145,7 +145,7 @@ export class Board {
         return localStorage.getItem("isNewUser");
     }
     continueOrRestart() {
-        const container = document.querySelector(".container");
+        const container = document.querySelector(".containerBoard");
         const options = document.createElement("div");
         options.textContent = "What would you like to do?"
         options.className = "options";
@@ -169,19 +169,22 @@ export class Board {
             board.style.opacity = "1";
             options.className = "hide";
         });
-        restartGame.addEventListener("click", () => {
-            board.style.opacity = "1";
-            console.log("מתחיל איפוס משחק");
-            this.removeAllPawn();
-            this.storage.counterDarkPawn = 12;
-            this.storage.counterRedPawn = 12;
-            this.storage.updaterDarkCounter();
-            this.storage.updaterRedCounter();
-            options.className = "hide";
-            this.render(this.boardArr, this.cells);
-        });
+        restartGame.addEventListener("click", this.resetGame);
 
     }
+    resetGame = ()=>{
+        document.querySelector(".board").style.opacity = "1";
+        console.log("מתחיל איפוס משחק");
+        this.removeAllPawn();
+        this.storage.counterDarkPawn = 12;
+        this.storage.counterRedPawn = 12;
+        this.storage.updaterDarkCounter();
+        this.storage.updaterRedCounter();
+        const option = document.querySelector(".options");
+        if(option)option.className = "hide";
+        this.render(this.boardArr, this.cells);
+    }
+    
 
 
 

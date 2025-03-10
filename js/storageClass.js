@@ -1,6 +1,8 @@
 class Storage {
     constructor() {
         this.indexUser = this.returnIndexOfCurrentUser();
+        console.log("index in storag: "+ this.indexUser);
+        
         this.counterDarkPawn = this.returnCounterDark();
         this.counterRedPawn = this.returnCounterRed();
         

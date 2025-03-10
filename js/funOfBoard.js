@@ -1,20 +1,29 @@
-import { Board } from './boardClass.js';
-import { windowVictory } from './victoryManagement.js';
-
+// import { openBoard } from "./log-in.js";
+const container = document.querySelector(".containerBoard");
+const hamburger = document.querySelector(".hamburger");
 const board = document.querySelector(".board");
-const game = new Board(".board", 8, 8);
-window.windowVictory = windowVictory;
-
-// drawBord.fillArr();
-
-game.drawBoard();
-// drawBord.render();
-// drawBord.updaterRedCounter();
-// drawBord.updaterDarkCounter();
-
-let second = 0;
-let minute = 0;
-const startTimer = () => {
+const buttons2 = document.querySelector(".buttons2");
+const close = document.querySelector(".close");
+const openNavBarEndClose = ()=>{
+    hamburger.addEventListener("click", () => {
+        buttons2.style.display = "flex";
+        hamburger.style.display = "none"
+        board.style.opacity = "40%"
+    })
+    close.addEventListener("click", () => {
+        buttons2.style.display = "none";
+        hamburger.style.display = "flex";
+        board.style.opacity = "100%"
+        document.querySelector(".containerBoard").style.opacity = "100%"
+    });
+};
+const drawName = ()=>{
+    const name = document.querySelector(".name");
+    name.textContent = "user name:" + localStorage.getItem("currentUser");
+}
+const drawTimer = ()=>{
+    let second = 0;
+    let minute = 0;
     const timerGame = setInterval(() => {
         second++;
         if (second === 60) {
@@ -25,22 +34,29 @@ const startTimer = () => {
         timer.textContent = "Timer: " + String(minute).padStart(2, '0') + ":" + String(second).padStart(2, '0');
     }, 1000);
 }
-startTimer();
-const home = () => {
+const goHome = () => {
     window.location.href = "index.html"
 };
-const restart = () => {
-    window.location.reload()
-};
-const hamburger = document.querySelector(".hamburger");
-const buttons2 = document.querySelector(".buttons2");
-window.yourAccount = () => {
+
+const returnIndexOfCurrentUser = ()=> {
+    const usersData = JSON.parse(localStorage.getItem("users")) || [];
+    const currentUser = localStorage.getItem("currentUser");
+    for (let i = 0; i < usersData.length; i++) {
+        if (usersData[i].username === currentUser) {
+            return i;
+        }
+    }
+    return -1;
+}
+const yourAccount = () => {
     const existingResults = document.querySelector(".yourResults");
     if (existingResults) {
         return; 
     }
     const users = JSON.parse(localStorage.getItem("users"));
-    const currentUser = users[game.storage.indexUser];
+    const indexUser = returnIndexOfCurrentUser();
+    const currentUser = users[indexUser];
+    console.log("index: "+window.Storage.indexUser);
     const youruserName = currentUser.username;
     const yourMail = currentUser.mail;
     const yourWinns = currentUser.wins;
@@ -57,13 +73,13 @@ window.yourAccount = () => {
     const divLoses = document.createElement("div");
     divLoses.textContent = "lose: " + yourLosses;
     results.append(divName, divGames, divWins, divLoses);
-    const container = document.querySelector(".container");
+    const container = document.querySelector(".containerBoard");
     container.appendChild(results);
     console.log(youruserName + ", " + yourMail + ", " + yourWinns + ".");
     board.style.opacity = "0.3";
     buttons2.style.display = "none";
     // hamburger.style.display = "flex";
-    document.querySelector(".container").style.opacity = "100%"
+    document.querySelector(".containerBoard").style.opacity = "100%"
     const back = document.createElement("button");
     back.textContent = "close";
     back.className = "closeAccount";
@@ -76,6 +92,9 @@ window.yourAccount = () => {
     });
     results.appendChild(back);
 };
+
+
+
 const newData = new Array(8).fill().map(() => Array(8).fill(null));
 const resetData = () => {
     for (let i = 0; i < newData.length; i++) {
@@ -88,10 +107,7 @@ const resetData = () => {
         }
     }
 }
-
-
-
- window.clearLocalStore = () => {
+const clearLocalStore = () => {
     console.log("מתחיל איפוס משחק");
     resetData();
     const usersData = JSON.parse(localStorage.getItem("users")) || [];
@@ -101,30 +117,26 @@ const resetData = () => {
             usersData[i].dataGame = newData;
             usersData[i].pawnDied[0] = 12;
             usersData[i].pawnDied[1] = 12;
-            console.log("עודכנו נתונים למשתמש:", currentUser, newData);
+            // console.log("עודכנו נתונים למשתמש:", currentUser, newData);
         }
     }
     localStorage.setItem("users", JSON.stringify(usersData));
-    window.location.reload();
-    // drawBord.render(); 
-
+    // window.location.reload();
 };
+openNavBarEndClose();
+drawName();
+drawTimer();
+const goHome_btn = document.querySelectorAll("#goHome");
+const yourAccount_btn = document.querySelectorAll("#yourAccount");
+const instractions_btn = document.querySelectorAll("#instractions");
+const boardResults_btn = document.querySelectorAll("#boardResult");
+const restart_btn = document.querySelectorAll("#restart");
 
-const close = document.querySelector(".close");
-hamburger.addEventListener("click", () => {
-    buttons2.style.display = "flex";
-    hamburger.style.display = "none"
-    document.querySelector(".container").style.opacity = "40%"
-})
-close.addEventListener("click", () => {
-    buttons2.style.display = "none";
-    hamburger.style.display = "flex";
-    document.querySelector(".container").style.opacity = "100%"
-})
-// drawBord.moveDownLeft(); 
+goHome_btn[0].addEventListener("click", goHome);
+goHome_btn[1].addEventListener("click", goHome);
+yourAccount_btn[0].addEventListener("click", yourAccount);
+yourAccount_btn[1].addEventListener("click", yourAccount);
+// restart_btn.addEventListener("click", async()=>{
+restart_btn[0].addEventListener("click",  window.gameInstance.resetGame);
+restart_btn[1].addEventListener("click",  window.gameInstance.resetGame);
 
-
-// const pawnsDed = document.querySelector(".pawns-ded");
-// pawnsDed.innerHTML = "סך הכל חיילים אדומים: <br>"+drawBord.counterRedPawn;
-const name = document.querySelector(".name");
-name.textContent = "user name:" + localStorage.getItem("currentUser");

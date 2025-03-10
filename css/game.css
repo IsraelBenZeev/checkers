@@ -79,7 +79,8 @@
     }
 
     .cr button,
-    .yourResults button, .victory button{
+    .yourResults button,
+    .victory button {
         background-color: rgb(140, 161, 168);
         color: rgb(186, 201, 202);
         font-size: large;
@@ -103,7 +104,8 @@
     }
 
     .cr button:hover,
-    .yourResults button:hover, .victory button:hover {
+    .yourResults button:hover,
+    .victory button:hover {
         background-color: rgb(157, 192, 207);
         color: white;
         transform: scale(1.1);
@@ -111,7 +113,8 @@
     }
 
     .cr button::before,
-    .yourResults button::before, .victory button::before {
+    .yourResults button::before,
+    .victory button::before {
         content: '';
         position: absolute;
         top: 50%;
@@ -125,13 +128,15 @@
     }
 
     .cr button::before,
-    .yourResults button::before,.victory button::before {
+    .yourResults button::before,
+    .victory button::before {
         width: 300%;
         height: 300%;
     }
 
     .cr button:active,
-    .yourResults button:active, .victory button:active {
+    .yourResults button:active,
+    .victory button:active {
         transform: scale(0.95);
     }
 
@@ -150,7 +155,8 @@
     }
 
     .cr button:focus,
-    .yourResults button:focus, .victory button:focus {
+    .yourResults button:focus,
+    .victory button:focus {
         outline: none;
         animation: pulse 1s infinite;
     }
@@ -195,8 +201,9 @@
             /* font-weight: bold; */
             color: blue;
             font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-            
+
         }
+
         button {
             width: 35%;
             height: 60px;
@@ -207,15 +214,18 @@
 
         }
     }
+
     @media (max-width: 681px) {
-        .victory{
+        .victory {
             max-width: 60%;
             padding: 50px 30px;
-            div{
-            font-size: 50px;
+
+            div {
+                font-size: 50px;
 
             }
-            button{
+
+            button {
                 width: 300px;
                 border: 3px solid red;
             }
@@ -249,7 +259,7 @@
         }
     }
 
-    .container {
+    .containerBoard {
         /* border: 3px solid red; */
         width: 100%;
         margin: auto;
@@ -449,7 +459,7 @@
             margin: 0;
         }
 
-        .container {
+        .containerBoard {
             margin: 0;
             /* background-color: aqua; */
             grid-template-areas:
@@ -496,6 +506,6 @@
         .name {
             font-size: small;
         }
-        
+
 
     }
