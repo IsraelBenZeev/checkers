@@ -21,10 +21,12 @@ const drawName = ()=>{
     const name = document.querySelector(".name");
     name.textContent = "user name:" + localStorage.getItem("currentUser");
 }
+let timerGame;//= 0;
 const drawTimer = ()=>{
     let second = 0;
     let minute = 0;
-    const timerGame = setInterval(() => {
+    if (timerGame) clearInterval(timerGame);
+    timerGame = setInterval(() => {
         second++;
         if (second === 60) {
             second = 0;
@@ -33,6 +35,10 @@ const drawTimer = ()=>{
         const timer = document.querySelector(".timer");
         timer.textContent = "Timer: " + String(minute).padStart(2, '0') + ":" + String(second).padStart(2, '0');
     }, 1000);
+}
+const restartTimer = ()=>{
+    clearInterval(timerGame);
+    drawTimer();
 }
 const goHome = () => {
     window.location.href = "index.html"
@@ -136,7 +142,12 @@ goHome_btn[0].addEventListener("click", goHome);
 goHome_btn[1].addEventListener("click", goHome);
 yourAccount_btn[0].addEventListener("click", yourAccount);
 yourAccount_btn[1].addEventListener("click", yourAccount);
-// restart_btn.addEventListener("click", async()=>{
-restart_btn[0].addEventListener("click",  window.gameInstance.resetGame);
-restart_btn[1].addEventListener("click",  window.gameInstance.resetGame);
+restart_btn[0].addEventListener("click",  ()=>{
+    window.gameInstance.resetGame();
+    restartTimer();
+});
+restart_btn[1].addEventListener("click",  ()=>{
+    window.gameInstance.resetGame();
+    restartTimer();
+});
 
